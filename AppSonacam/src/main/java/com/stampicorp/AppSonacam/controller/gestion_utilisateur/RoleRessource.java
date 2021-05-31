@@ -39,5 +39,19 @@ public class RoleRessource  {
             return new ResponseEntity<>(newRole.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+@PutMapping("/update")
+public ResponseEntity updateRole(@RequestBody Role role){
+    Role updateRole= roleService.create(role);
+    if (updateRole!=null? updateRole.getId()>0: false){
+        return new ResponseEntity<>(updateRole, HttpStatus.CREATED);
+    }else {
+        return new ResponseEntity<>(updateRole.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+@DeleteMapping("/delete/{id}")
 
+public ResponseEntity<Role> deleteRole(@PathVariable("id") Long id) {
+    roleService.delete(id);
+    return new ResponseEntity<>(HttpStatus.OK);
+}
 }

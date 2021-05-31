@@ -39,7 +39,7 @@ public class Utilisateur implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public void setId(Long id) {

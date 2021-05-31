@@ -26,8 +26,18 @@ public class Zone implements Serializable {
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
+    @Transient
+    private String message;
 
     public Zone() {
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Zone(String libelle) {
@@ -39,7 +49,7 @@ public class Zone implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public void setId(Long id) {
