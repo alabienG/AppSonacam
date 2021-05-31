@@ -2,6 +2,8 @@ package com.stampicorp.AppSonacam.models.gestion_utilisateur;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name="utilisateur")
 
@@ -25,6 +27,9 @@ public class Utilisateur implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="zone")
     private Zone zone;
+    private int etat;
+    private Date dateSave;
+    private Date dateUpdate;
 
     public Utilisateur() {
     }
@@ -127,5 +132,29 @@ public class Utilisateur implements Serializable {
 
     public void setZone(Zone zone) {
         this.zone = zone;
+    }
+
+    public int getEtat() {
+        return etat;
+    }
+
+    public void setEtat(int etat) {
+        this.etat = etat;
+    }
+
+    public Date getDateSave() {
+        return dateSave;
+    }
+
+    public void setDateSave(Date dateSave) {
+        this.dateSave = dateSave;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 }

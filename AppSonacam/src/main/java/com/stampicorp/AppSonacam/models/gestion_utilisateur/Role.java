@@ -2,6 +2,8 @@ package com.stampicorp.AppSonacam.models.gestion_utilisateur;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
+
 @Entity
 @Table(name="role")
 public class Role implements Serializable {
@@ -10,6 +12,9 @@ public class Role implements Serializable {
     private Long id;
     private String libelle;
     private String description;
+    private int etat;
+    private Date dateSave;
+    private Date dateUpdate;
 
     public Role() {
     }
@@ -40,5 +45,29 @@ public class Role implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getEtat() {
+        return etat;
+    }
+
+    public void setEtat(int etat) {
+        this.etat = etat;
+    }
+
+    public Date getDateSave() {
+        return dateSave;
+    }
+
+    public void setDateSave(Date dateSave) {
+        this.dateSave = dateSave;
+    }
+
+    public Date getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(Date dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 }
