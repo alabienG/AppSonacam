@@ -11,13 +11,21 @@ public class Activite implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String libelle;
+    private String description;
     private Double montantMin;
     private Double montantMax;
     private Date date_save;
     private Date date_update;
     private int etat;
 
+    @Transient
+    private String message;
+
     public Activite() {
+    }
+
+    public Activite(String message) {
+        this.message = message;
     }
 
     public Activite(Long id) {
@@ -78,5 +86,21 @@ public class Activite implements Serializable {
 
     public void setMontantMax(Double montantMax) {
         this.montantMax = montantMax;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
