@@ -14,14 +14,17 @@ public class Versement implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Double montant;
+    private String numero;
+    private String statut;
     private Utilisateur author;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "paiement")
     private Paiement paiement;
     private Date date_save;
     private Date date_update;
     private int etat;
-    private Double numero;
+    @Transient
+    private String message;
 
     public Versement(Long id) {
         this.id = id;
@@ -30,8 +33,12 @@ public class Versement implements Serializable {
     public Versement() {
     }
 
+    public Versement(String message) {
+        this.message = message;
+    }
+
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public void setId(Long id) {
@@ -86,11 +93,27 @@ public class Versement implements Serializable {
         this.etat = etat;
     }
 
-    public Double getNumero() {
+    public String getNumero() {
         return numero;
     }
 
-    public void setNumero(Double numero) {
+    public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public String getStatut() {
+        return statut;
+    }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

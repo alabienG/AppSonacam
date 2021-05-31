@@ -8,34 +8,43 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table (name = "contribuable")
+@Table(name = "contribuable")
 public class Contribuable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String raisonSociale ;
-    private  String nom;
+    private String numero;
+    private String raisonSociale;
+    private String nom;
     private String prenom;
     private String sexe;
     private String cni;
-    private  Double montant;
+    private Double montant;
     private String lieuDit;
     private String telephone;
     private String address;
+    private String latitude;
+    private String longitude;
     private Date date_save;
     private Date date_update;
     private int etat;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "activite")
     private Activite activite;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "zone")
     private Zone zone;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur")
     private Utilisateur author;
+    @Transient
+    private String message;
 
     public Contribuable() {
+    }
+
+    public Contribuable(String message) {
+        this.message = message;
     }
 
     public Contribuable(Long id) {
@@ -43,7 +52,7 @@ public class Contribuable implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public Date getDate_save() {
@@ -168,5 +177,37 @@ public class Contribuable implements Serializable {
 
     public void setAuthor(Utilisateur author) {
         this.author = author;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

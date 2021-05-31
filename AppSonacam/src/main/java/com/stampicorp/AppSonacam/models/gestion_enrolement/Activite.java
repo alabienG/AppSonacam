@@ -33,7 +33,7 @@ public class Activite implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public Date getDate_save() {

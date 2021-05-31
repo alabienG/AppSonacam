@@ -7,25 +7,39 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name="facture")
+@Table(name = "facture")
 public class Facture implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private  Long id;
+    private Long id;
     private String numero;
     private String statut;
     private Double Montant;
     private Date date_save;
     private Date date_update;
     private int etat;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "contribuable")
     private Contribuable contribuable;
-    @ManyToOne (fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur")
     private Utilisateur author;
+    @Transient
+    public String message;
 
     public Facture() {
+    }
+
+    public Facture(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Date getDate_save() {
@@ -57,7 +71,7 @@ public class Facture implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public void setId(Long id) {
@@ -103,4 +117,6 @@ public class Facture implements Serializable {
     public void setAuthor(Utilisateur author) {
         this.author = author;
     }
+
+
 }
