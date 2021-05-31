@@ -14,6 +14,9 @@ public class PeriodePaiement implements Serializable {
     private Date dateFin;
     private Date dateProchainPaiement;
     private int nombreTranche;
+    private Date date_save;
+    private Date date_update;
+    private int etat;
     @ManyToOne (fetch = FetchType.EAGER)
     @JoinColumn(name = "facture")
     private Facture facture;
@@ -23,6 +26,30 @@ public class PeriodePaiement implements Serializable {
 
     public PeriodePaiement(Long id) {
         this.id = id;
+    }
+
+    public Date getDate_save() {
+        return date_save;
+    }
+
+    public void setDate_save(Date date_save) {
+        this.date_save = date_save;
+    }
+
+    public Date getDate_update() {
+        return date_update;
+    }
+
+    public void setDate_update(Date date_update) {
+        this.date_update = date_update;
+    }
+
+    public int getEtat() {
+        return etat;
+    }
+
+    public void setEtat(int etat) {
+        this.etat = etat;
     }
 
     public Long getId() {
