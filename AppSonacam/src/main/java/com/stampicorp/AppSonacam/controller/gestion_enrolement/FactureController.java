@@ -73,7 +73,7 @@ public class FactureController {
         }
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(service.delete(id), HttpStatus.OK);
     }

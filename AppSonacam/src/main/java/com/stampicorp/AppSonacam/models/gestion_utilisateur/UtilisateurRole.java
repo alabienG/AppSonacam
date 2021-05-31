@@ -5,20 +5,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name= "utilisateur_role")
+@Table(name = "utilisateur_role")
 public class UtilisateurRole implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="utilisateur")
+    @JoinColumn(name = "utilisateur")
     private Utilisateur utilisateur;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="role")
+    @JoinColumn(name = "role")
     private Role role;
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
+    @Transient
     private String message;
 
     public UtilisateurRole() {
@@ -29,7 +30,7 @@ public class UtilisateurRole implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return id != null ? id : 0;
     }
 
     public UtilisateurRole(String message) {
@@ -78,5 +79,13 @@ public class UtilisateurRole implements Serializable {
 
     public void setDateUpdate(Date dateUpdate) {
         this.dateUpdate = dateUpdate;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
