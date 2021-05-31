@@ -1,4 +1,4 @@
-package com.stampicorp.AppSonacam.controller;
+package com.stampicorp.AppSonacam.controller.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.services.gestion_enrolement.FactureService;

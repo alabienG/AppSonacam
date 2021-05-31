@@ -19,6 +19,7 @@ public class UtilisateurRole implements Serializable {
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
+    private String message;
 
     public UtilisateurRole() {
     }
@@ -31,6 +32,9 @@ public class UtilisateurRole implements Serializable {
         return id;
     }
 
+    public UtilisateurRole(String message) {
+        this.message = message;
+    }
 
     public void setId(Long id) {
         this.id = id;

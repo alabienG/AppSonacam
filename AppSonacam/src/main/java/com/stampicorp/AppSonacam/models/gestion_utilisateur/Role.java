@@ -15,8 +15,21 @@ public class Role implements Serializable {
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
+    private String message;
 
     public Role() {
+    }
+
+    public Role(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public Role(Long id) {

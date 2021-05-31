@@ -15,6 +15,7 @@ public class TypeUtilisateur implements Serializable {
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
+    private String message;
 
     public TypeUtilisateur() {
     }
@@ -25,6 +26,10 @@ public class TypeUtilisateur implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public TypeUtilisateur(String message) {
+        this.message = message;
     }
 
     public void setId(Long id) {

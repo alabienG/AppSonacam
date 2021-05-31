@@ -30,6 +30,10 @@ public class Zone implements Serializable {
     public Zone() {
     }
 
+    public Zone(String libelle) {
+        this.libelle = libelle;
+    }
+
     public Zone(Long id) {
         this.id = id;
     }
