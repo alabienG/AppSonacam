@@ -21,35 +21,42 @@ public class ZoneRessource {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Zone>> getAllZone(){
-        List<Zone> zones =zoneService.findAllZone();
+    public ResponseEntity<List<Zone>> getAllZone() {
+        List<Zone> zones = zoneService.findAllZone();
         return new ResponseEntity<>(zones, HttpStatus.OK);
     }
 
+    @GetMapping("/getSecteurs")
+    public List<Zone> getSecteurs() {
+        return zoneService.getSecteurs();
+    }
+
     @GetMapping("/find/{id}")
-    public ResponseEntity<Zone> getZoneById(@PathVariable Long id){
+    public ResponseEntity<Zone> getZoneById(@PathVariable Long id) {
         Zone zone = zoneService.findZoneById(id);
         return new ResponseEntity<>(zone, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity addZone(@RequestBody Zone zone){
-        Zone newZone= zoneService.AddZone(zone);
-        if (newZone!=null? newZone.getId()>0: false){
+    public ResponseEntity addZone(@RequestBody Zone zone) {
+        Zone newZone = zoneService.AddZone(zone);
+        if (newZone != null ? newZone.getId() > 0 : false) {
             return new ResponseEntity<>(newZone, HttpStatus.CREATED);
-        }else {
+        } else {
             return new ResponseEntity<>(newZone.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PutMapping("/update")
-    public ResponseEntity updateZone(@RequestBody Zone zone){
-        Zone newZone= zoneService.AddZone(zone);
-        if (newZone!=null? newZone.getId()>0: false){
+    public ResponseEntity updateZone(@RequestBody Zone zone) {
+        Zone newZone = zoneService.AddZone(zone);
+        if (newZone != null ? newZone.getId() > 0 : false) {
             return new ResponseEntity<>(newZone, HttpStatus.CREATED);
-        }else {
+        } else {
             return new ResponseEntity<>(newZone.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @DeleteMapping("/delete/{id}")
 
     public ResponseEntity<Role> deleteZone(@PathVariable("id") Long id) {

@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name = "periode_paiement")
 public class PeriodePaiement implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Date dateDebut;
     private Date dateFin;

@@ -38,6 +38,11 @@ public class ContribuableController {
         }
     }
 
+    @GetMapping("/getOne/{id}")
+    public Contribuable getOne(@PathVariable Long id) {
+        return service.getOne(id);
+    }
+
     @PostMapping("/")
     public ResponseEntity create(@RequestBody Contribuable contribuable) {
         Contribuable con = service.create(contribuable);

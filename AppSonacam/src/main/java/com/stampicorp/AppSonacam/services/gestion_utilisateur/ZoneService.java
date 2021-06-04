@@ -15,57 +15,71 @@ import java.util.List;
 @Service
 public class ZoneService {
     private final ZoneRepo zoneRepo;
+
     @Autowired
     public ZoneService(ZoneRepo zoneRepo) {
         this.zoneRepo = zoneRepo;
     }
 
-    public List<Zone> findAllZone(){
-        return  zoneRepo.findByEtatEquals(Constantes.ADD);
+    public List<Zone> findAllZone() {
+        return zoneRepo.findByEtatEquals(Constantes.ADD);
     }
 
-    public Zone findZoneById(Long id){
+    public Zone findZoneById(Long id) {
         return zoneRepo.getOne(id);
     }
 
-    public Zone AddZone(Zone zone){
+    public Zone AddZone(Zone zone) {
         Zone z = zoneRepo.findByLibelleAndEtatEquals(zone.getLibelle(), Constantes.ADD);
-        try{
+        try {
 
-        if(z!= null? z.getId()>0: false){
-            return new Zone("cette zone n'existe pas");
-        }else{
-            zone.setEtat(Constantes.ADD);
-            zone.setDateUpdate(new Date());
-            zone.setDateSave(new Date());
-            return zoneRepo.save(zone) ;
-        }
-    }catch(Exception e){
+            if (z != null ? z.getId() > 0 : false) {
+                return new Zone("cette zone n'existe pas");
+            } else {
+                zone.setEtat(Constantes.ADD);
+                zone.setDateUpdate(new Date());
+                zone.setDateSave(new Date());
+                return zoneRepo.save(zone);
+            }
+        } catch (Exception e) {
             new SonacamException(e.getMessage());
             return new Zone(e.getMessage());
 
-    }}
+        }
+    }
 
-        public Zone updateZone(Zone zone){
-            Zone z = zoneRepo.findByLibelleAndEtatEquals(zone.getLibelle(), Constantes.ADD);
-            try{
-            if(z!= null? z.getId()>0: false){
+    public Zone updateZone(Zone zone) {
+        Zone z = zoneRepo.findByLibelleAndEtatEquals(zone.getLibelle(), Constantes.ADD);
+        try {
+            if (z != null ? z.getId() > 0 : false) {
                 return new Zone("cette zone n'existe pas");
-            }else{
+            } else {
                 zone.setEtat(Constantes.ADD);
                 zone.setDateUpdate(new Date());
                 return zoneRepo.save(zone);
-        }
-
-        }catch (Exception e){
-                new SonacamException(e.getMessage());
-                return new Zone (e.getMessage());
             }
+
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+            return new Zone(e.getMessage());
+        }
+    }
+
+    public List<Zone> getSecteurs() {
+        return zoneRepo.listeSecteur(Constantes.ADD);
+    }
+
+    public List<Zone> getArrondissement() {
+        return zoneRepo.listeArrondissement(Constantes.ADD);
+    }
+
+    public List<Zone> getDepartement() {
+        return zoneRepo.listeArrondissement(Constantes.ADD);
     }
 
     @Transactional
-    public void delete(Long id){
-        Zone z= zoneRepo.getOne(id);
+    public void delete(Long id) {
+        Zone z = zoneRepo.getOne(id);
         z.setEtat(Constantes.DELETE);
         z.setDateUpdate(new Date());
         zoneRepo.save(z);

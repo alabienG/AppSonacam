@@ -11,7 +11,7 @@ import java.util.Date;
 @Table(name = "contribuable")
 public class Contribuable implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String numero;
     private String raisonSociale;

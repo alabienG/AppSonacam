@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "paiement")
 public class Paiement implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Double Montant;
     private int tranche;

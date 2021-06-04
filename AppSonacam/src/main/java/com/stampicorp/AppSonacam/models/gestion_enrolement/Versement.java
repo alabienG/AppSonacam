@@ -11,7 +11,7 @@ import java.util.Date;
 @Table(name = "versement")
 public class Versement implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Double montant;
     private String numero;

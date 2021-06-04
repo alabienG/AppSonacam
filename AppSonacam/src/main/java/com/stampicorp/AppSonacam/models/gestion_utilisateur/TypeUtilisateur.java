@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name="type_utilisateur")
 public class TypeUtilisateur implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String libelle;
     private String description;

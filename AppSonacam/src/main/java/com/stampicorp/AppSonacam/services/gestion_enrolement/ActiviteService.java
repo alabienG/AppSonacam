@@ -5,12 +5,19 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Activite;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.ActiviteRepo;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ActiviteService {
@@ -81,5 +88,24 @@ public class ActiviteService {
             new SonacamException(e.getMessage());
             return e.getMessage();
         }
+    }
+
+    public String exportReport(String format) throws FileNotFoundException, JRException {
+        List<Activite> list = repos.findByEtatEquals(Constantes.ADD);
+        File file = ResourceUtils.getFile("classpath:activites.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
+        Map<String, Object> parameter = new HashMap<>();
+//        parameter.put("createdBy", "Georges Gouchere");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameter, dataSource);
+        String path = "D:\\dev\\Spring\\AppSonacam\\AppSonacam\\src\\main\\resources\\etats";
+        if (format.equalsIgnoreCase("html")) {
+            JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "\\activites.html");
+        }
+        if (format.equalsIgnoreCase("pdf")) {
+            JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\activites.pdf");
+        }
+
+        return "Export in path " + path;
     }
 }

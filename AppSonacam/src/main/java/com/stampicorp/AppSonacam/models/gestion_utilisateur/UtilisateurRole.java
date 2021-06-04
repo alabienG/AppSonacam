@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name = "utilisateur_role")
 public class UtilisateurRole implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur")

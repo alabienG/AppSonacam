@@ -13,6 +13,7 @@ public class Utilisateur implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String nom;
+    private String prenom;
     private String telephone;
     private String matricule;
     private String sexe;

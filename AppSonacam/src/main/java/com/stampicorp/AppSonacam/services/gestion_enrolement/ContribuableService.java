@@ -34,6 +34,10 @@ public class ContribuableService {
         }
     }
 
+    public Contribuable getOne(Long id) {
+        return repos.getOne(id);
+    }
+
     @Transactional
     public Contribuable create(Contribuable contribuable) {
         try {

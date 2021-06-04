@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "facture")
 public class Facture implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String numero;
     private String statut;

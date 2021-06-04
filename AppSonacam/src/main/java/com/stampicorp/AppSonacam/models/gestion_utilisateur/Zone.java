@@ -8,21 +8,24 @@ import java.util.Date;
 @Table
 public class Zone implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String libelle;
-    @ManyToOne(fetch =FetchType.EAGER)
-    @JoinColumn(name= "national")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "national")
     private Zone national;
-    @ManyToOne(fetch =FetchType.EAGER)
-    @JoinColumn(name= "region")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "region")
     private Zone region;
-    @ManyToOne(fetch =FetchType.EAGER)
-    @JoinColumn(name= "departement")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "departement")
     private Zone departement;
-    @ManyToOne(fetch =FetchType.EAGER)
-    @JoinColumn(name= "arrondissement")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "arrondissement")
     private Zone arrondissement;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "secteur")
+    private Zone secteur;
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
@@ -118,5 +121,13 @@ public class Zone implements Serializable {
 
     public void setDateUpdate(Date dateUpdate) {
         this.dateUpdate = dateUpdate;
+    }
+
+    public Zone getSecteur() {
+        return secteur;
+    }
+
+    public void setSecteur(Zone secteur) {
+        this.secteur = secteur;
     }
 }
