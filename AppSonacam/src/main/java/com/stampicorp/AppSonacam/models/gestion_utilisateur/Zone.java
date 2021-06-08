@@ -11,21 +11,10 @@ public class Zone implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String libelle;
+    private String description;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "national")
-    private Zone national;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "region")
-    private Zone region;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "departement")
-    private Zone departement;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "arrondissement")
-    private Zone arrondissement;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "secteur")
-    private Zone secteur;
+    @JoinColumn(name = "antenne")
+    private Antenne antenne;
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
@@ -67,36 +56,20 @@ public class Zone implements Serializable {
         this.libelle = libelle;
     }
 
-    public Zone getNational() {
-        return national;
+    public String getDescription() {
+        return description;
     }
 
-    public void setNational(Zone national) {
-        this.national = national;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Zone getRegion() {
-        return region;
+    public Antenne getAntenne() {
+        return antenne;
     }
 
-    public void setRegion(Zone region) {
-        this.region = region;
-    }
-
-    public Zone getDepartement() {
-        return departement;
-    }
-
-    public void setDepartement(Zone departement) {
-        this.departement = departement;
-    }
-
-    public Zone getArrondissement() {
-        return arrondissement;
-    }
-
-    public void setArrondissement(Zone arrondissement) {
-        this.arrondissement = arrondissement;
+    public void setAntenne(Antenne antenne) {
+        this.antenne = antenne;
     }
 
     public int getEtat() {
@@ -121,13 +94,5 @@ public class Zone implements Serializable {
 
     public void setDateUpdate(Date dateUpdate) {
         this.dateUpdate = dateUpdate;
-    }
-
-    public Zone getSecteur() {
-        return secteur;
-    }
-
-    public void setSecteur(Zone secteur) {
-        this.secteur = secteur;
     }
 }

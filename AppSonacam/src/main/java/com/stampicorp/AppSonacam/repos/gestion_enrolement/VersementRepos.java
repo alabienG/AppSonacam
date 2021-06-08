@@ -13,12 +13,12 @@ import java.util.List;
 @Repository
 public interface VersementRepos extends JpaRepository<Versement, Long> {
 
-    List<Versement> findByEtatEquals(int etat);
+    List<Versement> findByEtatEqualsOrderById(int etat);
 
     @Query(value = "select u from Versement u where u.paiement.facture = :facture and u.etat = :etat order by u.id desc ")
     List<Versement> allByFacture(Facture facture, int etat);
 
-    List<Versement> findByAuthorAndEtatEquals(Utilisateur author, int etat);
+    List<Versement> findByAuthorAndEtatEqualsOrderById(Utilisateur author, int etat);
 
     Versement findByNumeroAndEtatEquals(String numero, int etat);
 

@@ -18,11 +18,11 @@ public class ContribuableService {
     ContribuableRepos repos;
 
     public List<Contribuable> all() {
-        return repos.findByEtatEquals(Constantes.ADD);
+        return repos.findByEtatEqualsOrderByIdDesc(Constantes.ADD);
     }
 
     public List<Contribuable> allByActivite(Long idActivite) {
-        return repos.findByActiviteAndEtatEquals(new Activite(idActivite), Constantes.ADD);
+        return repos.findByActiviteAndEtatEqualsOrderByIdDesc(new Activite(idActivite), Constantes.ADD);
     }
 
     public Contribuable findByNumero(String numero) {

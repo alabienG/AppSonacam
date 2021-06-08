@@ -18,11 +18,11 @@ public class FactureService {
     FactureRepos repos;
 
     public List<Facture> list() {
-        return repos.findByEtatEquals(Constantes.ADD);
+        return repos.findByEtatEqualsOrderById(Constantes.ADD);
     }
 
     public List<Facture> listByContribuable(Long idContribuable) {
-        return repos.findByContribuableAndEtatEquals(new Contribuable(idContribuable), Constantes.ADD);
+        return repos.findByContribuableAndEtatEqualsOrderById(new Contribuable(idContribuable), Constantes.ADD);
     }
 
     public Facture findByNumero(String numero) {

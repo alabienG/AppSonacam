@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface FactureRepos extends JpaRepository<Facture, Long> {
 
-    List<Facture> findByEtatEquals(int etat);
+    List<Facture> findByEtatEqualsOrderById(int etat);
 
-    List<Facture> findByContribuableAndEtatEquals(Contribuable contribuable, int etat);
+    List<Facture> findByContribuableAndEtatEqualsOrderById(Contribuable contribuable, int etat);
 
     Facture findByNumeroAndEtatEquals(String numero, int etat);
 

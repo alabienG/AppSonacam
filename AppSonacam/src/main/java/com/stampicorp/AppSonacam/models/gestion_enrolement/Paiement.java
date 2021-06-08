@@ -12,8 +12,9 @@ public class Paiement implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double Montant;
+    private Double montant;
     private int tranche;
+    private String numero;
     private Date date_save;
     private Date date_update;
     private int etat;
@@ -70,11 +71,11 @@ public class Paiement implements Serializable {
     }
 
     public Double getMontant() {
-        return Montant;
+        return montant;
     }
 
     public void setMontant(Double montant) {
-        Montant = montant;
+        this.montant = montant;
     }
 
     public int getTranche() {
@@ -107,5 +108,13 @@ public class Paiement implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 }

@@ -14,7 +14,7 @@ public class Facture implements Serializable {
     private Long id;
     private String numero;
     private String statut;
-    private Double Montant;
+    private Double montant;
     private Date date_save;
     private Date date_update;
     private int etat;
@@ -95,11 +95,11 @@ public class Facture implements Serializable {
     }
 
     public Double getMontant() {
-        return Montant;
+        return montant;
     }
 
     public void setMontant(Double montant) {
-        Montant = montant;
+        this.montant = montant;
     }
 
     public Contribuable getContribuable() {

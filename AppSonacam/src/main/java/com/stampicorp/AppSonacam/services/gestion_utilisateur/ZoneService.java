@@ -1,6 +1,7 @@
 package com.stampicorp.AppSonacam.services.gestion_utilisateur;
 
 import com.stampicorp.AppSonacam.exception.SonacamException;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Antenne;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Role;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.ZoneRepo;
@@ -65,16 +66,8 @@ public class ZoneService {
         }
     }
 
-    public List<Zone> getSecteurs() {
-        return zoneRepo.listeSecteur(Constantes.ADD);
-    }
-
-    public List<Zone> getArrondissement() {
-        return zoneRepo.listeArrondissement(Constantes.ADD);
-    }
-
-    public List<Zone> getDepartement() {
-        return zoneRepo.listeArrondissement(Constantes.ADD);
+    public List<Zone> findByAntenne(Long idAntenne) {
+        return zoneRepo.findByAntenneAndEtatEquals(new Antenne(idAntenne), Constantes.ADD);
     }
 
     @Transactional

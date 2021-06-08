@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface ContribuableRepos extends JpaRepository<Contribuable, Long> {
 
-    List<Contribuable> findByEtatEquals(int etat);
+    List<Contribuable> findByEtatEqualsOrderByIdDesc(int etat);
 
-    List<Contribuable> findByActiviteAndEtatEquals(Activite activite, int etat);
+    List<Contribuable> findByActiviteAndEtatEqualsOrderByIdDesc(Activite activite, int etat);
 
     Contribuable findByNumeroAndEtatEquals(String numero, int etat);
 

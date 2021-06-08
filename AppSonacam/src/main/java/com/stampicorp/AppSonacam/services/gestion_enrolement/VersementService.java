@@ -2,6 +2,7 @@ package com.stampicorp.AppSonacam.services.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
+import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.VersementRepos;
@@ -20,7 +21,7 @@ public class VersementService {
     VersementRepos repos;
 
     public List<Versement> all() {
-        return repos.findByEtatEquals(Constantes.ADD);
+        return repos.findByEtatEqualsOrderById(Constantes.ADD);
     }
 
     public List<Versement> allByFacture(Long idFacture) {
@@ -28,7 +29,11 @@ public class VersementService {
     }
 
     public List<Versement> allByUtilisateur(Long idUser) {
-        return repos.findByAuthorAndEtatEquals(new Utilisateur(idUser), Constantes.ADD);
+        return repos.findByAuthorAndEtatEqualsOrderById(new Utilisateur(idUser), Constantes.ADD);
+    }
+
+    public Versement findByPaiement(Long idPaiement) {
+        return repos.findByPaiementAndEtatEquals(new Paiement(), Constantes.ADD);
     }
 
     @Transactional
