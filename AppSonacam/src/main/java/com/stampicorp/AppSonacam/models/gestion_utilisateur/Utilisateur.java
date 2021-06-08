@@ -22,9 +22,9 @@ public class Utilisateur implements Serializable {
     private String email;
     private String userName;
     private String password;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="type_utilisateur")
-    private TypeUtilisateur type;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name="type_utilisateur")
+//    private TypeUtilisateur type;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="zone")
     private Zone zone;
@@ -32,7 +32,14 @@ public class Utilisateur implements Serializable {
     private Date dateSave;
     private Date dateUpdate;
 
+    @Transient
+    private String message;
+
     public Utilisateur() {
+    }
+
+    public Utilisateur(String message) {
+        this.message = message;
     }
 
     public Utilisateur(Long id) {
@@ -119,13 +126,13 @@ public class Utilisateur implements Serializable {
         this.password = password;
     }
 
-    public TypeUtilisateur getType() {
-        return type;
-    }
-
-    public void setType(TypeUtilisateur type) {
-        this.type = type;
-    }
+//    public TypeUtilisateur getType() {
+//        return type;
+//    }
+//
+//    public void setType(TypeUtilisateur type) {
+//        this.type = type;
+//    }
 
     public Zone getZone() {
         return zone;
@@ -165,5 +172,13 @@ public class Utilisateur implements Serializable {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

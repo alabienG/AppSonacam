@@ -58,7 +58,6 @@ public class ZoneRessource {
     }
 
     @DeleteMapping("/delete/{id}")
-
     public ResponseEntity<Role> deleteZone(@PathVariable("id") Long id) {
         zoneService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

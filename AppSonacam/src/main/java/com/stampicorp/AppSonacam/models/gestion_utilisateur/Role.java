@@ -33,6 +33,7 @@ public class Role implements Serializable {
         this.message = message;
     }
 
+
     public Role(Long id) {
         this.id = id;
     }
