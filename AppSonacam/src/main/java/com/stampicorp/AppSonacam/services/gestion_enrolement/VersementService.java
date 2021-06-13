@@ -33,7 +33,7 @@ public class VersementService {
     }
 
     public Versement findByPaiement(Long idPaiement) {
-        return repos.findByPaiementAndEtatEquals(new Paiement(), Constantes.ADD);
+        return repos.findByPaiementAndEtatEquals(new Paiement(idPaiement), Constantes.ADD);
     }
 
     @Transactional
@@ -64,7 +64,7 @@ public class VersementService {
     @Transactional
     public Versement valider(Versement versement) {
         try {
-            versement.setStatut(Constantes.STATUT_VALIDER);
+            versement.setStatut(Constantes.STATUT_PAYER);
             versement.setDate_update(new Date());
             return repos.save(versement);
         } catch (Exception e) {

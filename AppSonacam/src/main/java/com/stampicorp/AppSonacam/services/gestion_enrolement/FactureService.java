@@ -5,10 +5,14 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.FactureRepos;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -32,10 +36,23 @@ public class FactureService {
     @Transactional
     public Facture create(Facture facture) {
         try {
+
+
             facture.setNumero(generatedNumero(facture));
             Facture f = repos.findByNumeroAndEtatEquals(facture.getNumero(), Constantes.ADD);
             if (f != null ? f.getId() > 0 : false) {
                 return new Facture("Ce numéro de facture existe déjà !");
+            }
+
+
+            LocalDate now = LocalDate.now().with(TemporalAdjusters.firstDayOfYear());
+            Date debut = Utils.modifyDateLayout(now.getDayOfMonth() + "-" + now.getMonthValue() + "-" + now.getYear() + " 00:00:00 UTC");
+            now = LocalDate.now().with(TemporalAdjusters.lastDayOfYear());
+            Date fin = Utils.modifyDateLayout(now.getDayOfMonth() + "-" + now.getMonthValue() + "-" + now.getYear() + " 00:00:00 UTC");
+
+            f = repos.findbyContribuableAndDate(facture.getContribuable(), debut, fin, Constantes.ADD);
+            if (f != null ? f.getId() > 0 : false) {
+                return new Facture("Cet usager à déjà un ordre de paiement en cours");
             }
             facture.setStatut(Constantes.STATUT_ATTENTE);
             facture.setEtat(Constantes.ADD);

@@ -35,6 +35,11 @@ public class PaiementService {
         return repos.findByAuthorAndEtatEqualsOrderById(new Utilisateur(idAuthor), Constantes.ADD);
     }
 
+
+    public Paiement getOne(Long id) {
+        return repos.getOne(id);
+    }
+
     @Transactional
     public Paiement create(Paiement paiement) {
         try {
@@ -64,6 +69,25 @@ public class PaiementService {
                     Facture facture = paiement.getFacture();
                     factureService.payer(facture);
                 }
+
+                int tranche = list.size();
+                if (tranche > 1) {
+                    // alors on est à la troisieme tranche
+                    if ((paiement.getFacture().getMontant() - montant) > paiement.getMontant()) {
+                        return new Paiement("Ce paiement correspond à la troisième tranche et doit solder la facture , vous devez payer " + (paiement.getFacture().getMontant() - montant) + " FCFA");
+                    } else {
+                        tranche++;
+                        paiement.setTranche(tranche);
+                    }
+                } else {
+                    tranche++;
+                    paiement.setTranche(tranche);
+                }
+            } else {
+                paiement.setTranche(1);
+            }
+            if (paiement.getMontant() > paiement.getFacture().getMontant()) {
+                return new Paiement("Le montant du paiement est supérieur au montant de l'ordre de redevance !");
             }
 
 
@@ -135,14 +159,47 @@ public class PaiementService {
         }
     }
 
+    public Double getSolde(Long idFacture) {
+        try {
+            List<Paiement> list = repos.findByFactureAndEtatEqualsOrderById(new Facture(idFacture), Constantes.ADD);
+            double solde = 0.0;
+            if (list != null ? list.size() > 0 : false) {
+                for (Paiement p : list) {
+                    solde += p.getMontant();
+                }
+
+            }
+            return solde;
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+            return null;
+        }
+    }
+
     @Transactional
     public String delete(Long id) {
         try {
 
             Paiement paiement = repos.getOne(id);
+            // on verifie si on a déjà encaisser le paiement
+            Versement versement = versementService.findByPaiement(paiement.getId());
+            if (versement.getStatut().equals(Constantes.STATUT_PAYER)) {
+                return "Ce paiement ne peut pas être supprimer, il a déjà été encaisser !";
+            }
+
+            // on modifie le statut de la facture si elle était déjà payer !
+            if (paiement.getFacture().getStatut().equals(Constantes.STATUT_PAYER)) {
+                paiement.getFacture().setStatut(Constantes.STATUT_VALIDER);
+                factureService.update(paiement.getFacture());
+            }
+
+            // on efface le versement
+            versementService.delete(versement.getId());
+            // on efface le paiement
             paiement.setEtat(Constantes.DELETE);
             paiement.setDate_update(new Date());
             repos.save(paiement);
+
             // suppression des versements !
             return "Suppression effectuée avec succès !";
 

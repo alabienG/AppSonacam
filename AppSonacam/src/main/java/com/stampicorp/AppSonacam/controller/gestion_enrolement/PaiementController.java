@@ -33,6 +33,16 @@ public class PaiementController {
         return service.allByAuthor(idAuthor);
     }
 
+    @GetMapping("/getOne/{id}")
+    public ResponseEntity getOne(@PathVariable Long id) {
+        return new ResponseEntity(service.getOne(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/getSolde/{idFacture}")
+    public Double getSolde(@PathVariable Long idFacture) {
+        return service.getSolde(idFacture);
+    }
+
     @PostMapping("/")
     public ResponseEntity create(@RequestBody Paiement paiement) {
         Paiement p = service.create(paiement);
@@ -55,6 +65,7 @@ public class PaiementController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        return new ResponseEntity(service.delete(id), HttpStatus.OK);
+        String deleted = service.delete(id);
+        return new ResponseEntity(deleted, HttpStatus.OK);
     }
 }

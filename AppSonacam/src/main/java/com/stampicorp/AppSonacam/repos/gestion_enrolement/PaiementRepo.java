@@ -18,6 +18,11 @@ public interface PaiementRepo extends JpaRepository<Paiement, Long> {
 
     List<Paiement> findByAuthorAndEtatEqualsOrderById(Utilisateur author, int etat);
 
+    @Query(value = "select max(u.tranche) from Paiement u where u.facture = :facture")
+    int getMaxTranche(Facture facture);
+
     @Query(value = "select count (u.id) from Paiement u")
     Long getCountId();
+
+
 }
