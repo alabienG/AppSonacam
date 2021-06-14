@@ -1,5 +1,7 @@
 package com.stampicorp.AppSonacam.models.gestion_utilisateur;
 
+import com.stampicorp.AppSonacam.utils.ERole;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -10,7 +12,9 @@ public class Role implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String libelle;
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private ERole libelle;
     private String description;
     private int etat;
     private Date dateSave;
@@ -21,8 +25,8 @@ public class Role implements Serializable {
     public Role() {
     }
 
-    public Role(String libelle) {
-        this.libelle = libelle;
+    public Role(String message) {
+        this.message = message;
     }
 
     public String getMessage() {
@@ -46,11 +50,11 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public String getLibelle() {
+    public ERole getLibelle() {
         return libelle;
     }
 
-    public void setLibelle(String libelle) {
+    public void setLibelle(ERole libelle) {
         this.libelle = libelle;
     }
 

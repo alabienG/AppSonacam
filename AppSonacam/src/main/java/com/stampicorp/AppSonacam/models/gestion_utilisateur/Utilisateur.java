@@ -1,8 +1,13 @@
 package com.stampicorp.AppSonacam.models.gestion_utilisateur;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="utilisateur")
@@ -20,7 +25,7 @@ public class Utilisateur implements Serializable {
     private String ville;
     private String cni;
     private String email;
-    private String userName;
+    private String username;
     private String password;
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name="type_utilisateur")
@@ -32,12 +37,23 @@ public class Utilisateur implements Serializable {
     private Date dateSave;
     private Date dateUpdate;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
     @Transient
     private String message;
 
     public Utilisateur() {
     }
 
+    public Utilisateur(@NotBlank @Size(max = 20) String username, @NotBlank @Size(max = 50) @Email String email, @NotBlank @Size(max = 120) String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
     public Utilisateur(String message) {
         this.message = message;
     }
@@ -110,12 +126,12 @@ public class Utilisateur implements Serializable {
         this.email = email;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -180,5 +196,13 @@ public class Utilisateur implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
