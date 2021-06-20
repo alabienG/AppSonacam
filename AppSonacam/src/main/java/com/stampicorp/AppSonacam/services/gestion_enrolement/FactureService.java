@@ -57,7 +57,7 @@ public class FactureService {
                 Employe employe = employeService.getEmployeByUser(users.getId());
                 Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
                 if (roles.contains(admin)) {
-                    repos.findByEtatEqualsOrderById(Constantes.ADD);
+                    return repos.findByEtatEqualsOrderById(Constantes.ADD);
                 }
 
                 Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
@@ -80,7 +80,6 @@ public class FactureService {
     @Transactional
     public Facture create(Facture facture) {
         try {
-
 
             facture.setNumero(generatedNumero(facture));
             Facture f = repos.findByNumeroAndEtatEquals(facture.getNumero(), Constantes.ADD);

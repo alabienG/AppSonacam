@@ -24,7 +24,7 @@ public interface ContribuableRepos extends JpaRepository<Contribuable, Long> {
 
     Contribuable findByCniAndEtatEquals(String cni, int etat);
 
-    List<Contribuable> findByAuthorAndEtatEquals(Utilisateur author, int etat);
+    List<Contribuable> findByAuthorAndEtatEqualsOrderById(Utilisateur author, int etat);
 
     @Query(value = "select count (u.id) from Contribuable u")
     Long getCountId();

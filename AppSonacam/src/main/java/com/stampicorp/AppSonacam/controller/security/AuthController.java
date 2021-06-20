@@ -1,16 +1,21 @@
 package com.stampicorp.AppSonacam.controller.security;
 
+import com.stampicorp.AppSonacam.exception.TokenRefreshException;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Role;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.RoleRepo;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.UtilisateurRepo;
+import com.stampicorp.AppSonacam.request.RefreshToken;
 import com.stampicorp.AppSonacam.request.exchange.LoginRequest;
 import com.stampicorp.AppSonacam.request.exchange.SignupRequest;
+import com.stampicorp.AppSonacam.request.exchange.TokenRefreshResponse;
 import com.stampicorp.AppSonacam.request.response.JwtResponse;
 import com.stampicorp.AppSonacam.request.response.MessageResponse;
 import com.stampicorp.AppSonacam.security.JwtUtils;
+import com.stampicorp.AppSonacam.security.TokenRefreshRequest;
 import com.stampicorp.AppSonacam.security.UserDetailsImpl;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
+import com.stampicorp.AppSonacam.services.secutity.RefreshTokenService;
 import com.stampicorp.AppSonacam.utils.Constantes;
 import com.stampicorp.AppSonacam.utils.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +53,10 @@ public class AuthController {
     @Autowired
     UtilisateurService utilisateurService;
 
+    @Autowired
+    RefreshTokenService refreshTokenService;
+
+
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -63,7 +72,9 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
         return ResponseEntity.ok(new JwtResponse(jwt,
+                refreshToken.getToken(),
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
@@ -150,5 +161,20 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/refreshtoken")
+    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                    return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                        "Refresh token is not in database!"));
     }
 }

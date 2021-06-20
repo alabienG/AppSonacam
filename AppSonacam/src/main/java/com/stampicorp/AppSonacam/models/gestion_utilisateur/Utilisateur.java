@@ -32,6 +32,8 @@ public class Utilisateur implements Serializable {
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
+    private String refreshToken ;
+    private String tokenType;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
@@ -200,5 +202,21 @@ public class Utilisateur implements Serializable {
 
     public void setAgent(boolean agent) {
         this.agent = agent;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
     }
 }

@@ -68,7 +68,7 @@ public class ContribuableService {
             UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (user != null) {
                 Utilisateur users = new Utilisateur(user.getId());
-                return repos.findByAuthorAndEtatEquals(users, Constantes.ADD);
+                return repos.findByAuthorAndEtatEqualsOrderById(users, Constantes.ADD);
             }
             return null;
         } catch (Exception e) {
