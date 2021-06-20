@@ -71,11 +71,6 @@ public class AntenneService {
     public String delete(Long id) {
         try {
             Antenne antenne = repos.getOne(id);
-
-            List<Zone> list = zoneService.findByAntenne(antenne.getId());
-            if (list != null ? list.size() > 0 : false) {
-                return "Cette antenne ne peut pas être supprimer !";
-            }
             antenne.setEtat(Constantes.DELETE);
             antenne.setDateUpdate(new Date());
             repos.save(antenne);

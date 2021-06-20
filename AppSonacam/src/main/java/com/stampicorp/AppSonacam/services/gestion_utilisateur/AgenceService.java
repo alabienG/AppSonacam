@@ -3,6 +3,7 @@ package com.stampicorp.AppSonacam.services.gestion_utilisateur;
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Antenne;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Delegation;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Pays;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.AgenceRepos;
 import com.stampicorp.AppSonacam.utils.Constantes;
@@ -27,8 +28,8 @@ public class AgenceService {
         return repos.findByEtatEquals(Constantes.ADD);
     }
 
-    public List<Agence> findByPays(Long idPays) {
-        return repos.findByPaysAndEtatEquals(new Pays(idPays), Constantes.ADD);
+    public List<Agence> findByDelegation(Long idPays) {
+        return repos.findByDelegationAndEtatEquals(new Delegation(idPays), Constantes.ADD);
     }
 
     @Transactional

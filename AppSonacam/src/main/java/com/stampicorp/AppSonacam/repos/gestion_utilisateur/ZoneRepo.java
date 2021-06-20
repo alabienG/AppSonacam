@@ -1,5 +1,6 @@
 package com.stampicorp.AppSonacam.repos.gestion_utilisateur;
 
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Antenne;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ public interface ZoneRepo extends JpaRepository<Zone, Long> {
 
     List<Zone> findByEtatEquals(int etat);
 
-    List<Zone> findByAntenneAndEtatEquals(Antenne antenne, int etat);
+    List<Zone> findByAgenceAndEtatEquals(Agence agence, int etat);
 
     Zone findByLibelleAndEtatEquals(String libelle, int add);
 

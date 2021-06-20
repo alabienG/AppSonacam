@@ -25,6 +25,10 @@ public class Role implements Serializable {
     public Role() {
     }
 
+    public Role(ERole libelle) {
+        this.libelle = libelle;
+    }
+
     public Role(String message) {
         this.message = message;
     }

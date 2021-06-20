@@ -39,9 +39,9 @@ public class UtilisateurService {
         return null;
     }
 
-    public List<Utilisateur> findByZone(Long idZone) {
-        return repos.findByZoneAndEtatEqualsOrderById(new Zone(idZone), Constantes.ADD);
-    }
+//    public List<Utilisateur> findByZone(Long idZone) {
+//        return repos.findByZoneAndEtatEqualsOrderById(new Zone(idZone), Constantes.ADD);
+//    }
 
     public Utilisateur getOne(Long id) {
         return repos.getOne(id);
@@ -183,3 +183,4 @@ public class UtilisateurService {
     }
 
 }
+

@@ -3,26 +3,78 @@ package com.stampicorp.AppSonacam.services.gestion_enrolement;
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Activite;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.ContribuableRepos;
+import com.stampicorp.AppSonacam.repos.gestion_utilisateur.AgenceRepos;
+import com.stampicorp.AppSonacam.repos.gestion_utilisateur.RoleRepo;
+import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.ERole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ContribuableService {
     @Autowired
     ContribuableRepos repos;
+    @Autowired
+    UtilisateurService utilisateurService;
+    @Autowired
+    AgentService agentService;
+    @Autowired
+    EmployeService employeService;
+    @Autowired
+    RoleRepo roleRepo;
+    @Autowired
+    ZoneService zoneService;
 
     public List<Contribuable> all() {
-        return repos.findByEtatEqualsOrderByIdDesc(Constantes.ADD);
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            Utilisateur users = utilisateurService.getOne(user.getId());
+            if (users.getAgent()) {
+                return allByAuthor();
+            } else {
+                Set<Role> roles = users.getRoles();
+                Employe employe = employeService.getEmployeByUser(users.getId());
+                Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
+                if (roles.contains(admin)) {
+                    return repos.findByEtatEqualsOrderByIdDesc(Constantes.ADD);
+                }
+                Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+                if (roles.contains(agence)) {
+                    return repos.findByAgence(employe.getAgence(), Constantes.ADD);
+                }
+
+            }
+        }
+        List<Contribuable> list = repos.findByEtatEqualsOrderByIdDesc(Constantes.ADD);
+        return list;
     }
 
     public List<Contribuable> allByActivite(Long idActivite) {
         return repos.findByActiviteAndEtatEqualsOrderByIdDesc(new Activite(idActivite), Constantes.ADD);
+    }
+
+    public List<Contribuable> allByAuthor() {
+        try {
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = new Utilisateur(user.getId());
+                return repos.findByAuthorAndEtatEquals(users, Constantes.ADD);
+            }
+            return null;
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+            return null;
+        }
     }
 
     public Contribuable findByNumero(String numero) {
@@ -42,14 +94,36 @@ public class ContribuableService {
     public Contribuable create(Contribuable contribuable) {
         try {
             contribuable.setNumero(generatedNumero(contribuable));
+
             Contribuable c = repos.findByNumeroAndEtatEquals(contribuable.getNumero(), Constantes.ADD);
             if (c != null ? c.getId() > 0 : false) {
                 return new Contribuable("Un contribuable existe déjà avec ce numéro !");
             }
+
             if (contribuable.getCni() != null ? contribuable.getCni().length() > 0 : false) {
                 c = repos.findByCniAndEtatEquals(contribuable.getCni(), Constantes.ADD);
                 if (c != null ? c.getId() > 0 : false) {
                     return new Contribuable("Un contribuable existe déjà avec ce numéro de CNI !");
+                }
+            }
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                contribuable.setAuthor(users);
+                if (users.getAgent()) {
+                    Agent agent = agentService.getAgentByUser(users.getId());
+                    if (agent != null ? agent.getId() > 0 : false) {
+                        contribuable.setZone(agent.getZone());
+                    }
+                } else {
+                    Employe employe = employeService.getEmployeByUser(users.getId());
+                    if (employe != null ? employe.getId() > 0 : false) {
+                        List<Zone> zones = zoneService.findByAgence(employe.getAgence().getId());
+                        contribuable.setZone(zones.get(0));
+                    } else {
+                        return new Contribuable("Vous n'êtes rattaché à aucune zone ni agence ! veuillez contacter un administrateur");
+                    }
                 }
             }
             contribuable.setEtat(Constantes.ADD);
@@ -75,6 +149,17 @@ public class ContribuableService {
                 c = repos.findByCniAndEtatEquals(contribuable.getCni(), Constantes.ADD);
                 if (c != null ? c.getId() != contribuable.getId() : false) {
                     return new Contribuable("Un contribuable existe déjà avec ce numéro de CNI !");
+                }
+            }
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                contribuable.setAuthor(users);
+                if (users.getAgent()) {
+                    Agent agent = agentService.getAgentByUser(users.getId());
+                    if (agent != null ? agent.getId() > 0 : false) {
+                        contribuable.setZone(agent.getZone());
+                    }
                 }
             }
             contribuable.setDate_update(new Date());

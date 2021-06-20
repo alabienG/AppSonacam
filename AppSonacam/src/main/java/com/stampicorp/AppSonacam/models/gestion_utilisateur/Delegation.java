@@ -9,34 +9,31 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "agence")
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "delegation")
 @Data
-public class Agence implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Delegation implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String libelle;
-    private String description;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "pays")
+    private Pays pays;
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "chef_agence")
-    private Utilisateur chef;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "delegation")
-    private Delegation delegation;
 
     @Transient
     private String message;
 
-    public Agence(String message) {
+
+    public Delegation(String message) {
         this.message = message;
     }
 
-    public Agence(Long id) {
+    public Delegation(Long id) {
         this.id = id;
     }
 

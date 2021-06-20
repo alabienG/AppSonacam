@@ -6,8 +6,11 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.VersementRepos;
+import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
 import com.stampicorp.AppSonacam.utils.Constantes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,6 +22,8 @@ public class VersementService {
 
     @Autowired
     VersementRepos repos;
+    @Autowired
+    UtilisateurService utilisateurService;
 
     public List<Versement> all() {
         return repos.findByEtatEqualsOrderById(Constantes.ADD);
@@ -64,6 +69,12 @@ public class VersementService {
     @Transactional
     public Versement valider(Versement versement) {
         try {
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                versement.setAuthor(users);
+            }
             versement.setStatut(Constantes.STATUT_PAYER);
             versement.setDate_update(new Date());
             return repos.save(versement);
@@ -109,7 +120,6 @@ public class VersementService {
             return e.getMessage();
         }
     }
-
 
     private String generatedNumero() {
         String numero = "SONACAM/PV/";

@@ -27,12 +27,8 @@ public class Utilisateur implements Serializable {
     private String email;
     private String username;
     private String password;
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name="type_utilisateur")
-//    private TypeUtilisateur type;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="zone")
-    private Zone zone;
+
+    private boolean agent;
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
@@ -141,22 +137,14 @@ public class Utilisateur implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
-//    public TypeUtilisateur getType() {
-//        return type;
+//
+//    public Zone getZone() {
+//        return zone;
 //    }
 //
-//    public void setType(TypeUtilisateur type) {
-//        this.type = type;
+//    public void setZone(Zone zone) {
+//        this.zone = zone;
 //    }
-
-    public Zone getZone() {
-        return zone;
-    }
-
-    public void setZone(Zone zone) {
-        this.zone = zone;
-    }
 
     public int getEtat() {
         return etat;
@@ -204,5 +192,13 @@ public class Utilisateur implements Serializable {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public boolean getAgent() {
+        return agent;
+    }
+
+    public void setAgent(boolean agent) {
+        this.agent = agent;
     }
 }

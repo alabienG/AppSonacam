@@ -16,7 +16,7 @@ public interface UtilisateurRepo extends JpaRepository<Utilisateur, Long> {
 
     List<Utilisateur> findByEtatEqualsOrderById(int etat);
 
-    List<Utilisateur> findByZoneAndEtatEqualsOrderById(Zone zone, int etat);
+//    List<Utilisateur> findByZoneAndEtatEqualsOrderById(Zone zone, int etat);
 
     @Query(value = "select count (u.id) from Utilisateur u")
     Long getCountId();

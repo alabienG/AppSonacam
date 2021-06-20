@@ -32,10 +32,10 @@ public class UtilisateurController {
         return service.findByRole(idRole);
     }
 
-    @GetMapping("/findByZone/{idZone}")
-    public List<Utilisateur> findByZone(@PathVariable Long idZone) {
-        return service.findByZone(idZone);
-    }
+//    @GetMapping("/findByZone/{idZone}")
+//    public List<Utilisateur> findByZone(@PathVariable Long idZone) {
+//        return service.findByZone(idZone);
+//    }
 
     @GetMapping("/{id}")
     public Utilisateur getOne(@PathVariable Long id) {

@@ -23,9 +23,9 @@ public class AgenceController {
         return service.all();
     }
 
-    @GetMapping("/findByPays/{idPays}")
-    public List<Agence> findByPays(@PathVariable Long idPays) {
-        return service.findByPays(idPays);
+    @GetMapping("/findByDelegation/{idDelegation}")
+    public List<Agence> findByPays(@PathVariable Long idDelegation) {
+        return service.findByDelegation(idDelegation);
     }
 
     @PostMapping("/")

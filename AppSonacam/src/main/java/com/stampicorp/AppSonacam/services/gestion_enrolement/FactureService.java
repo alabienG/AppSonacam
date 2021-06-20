@@ -3,10 +3,19 @@ package com.stampicorp.AppSonacam.services.gestion_enrolement;
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.FactureRepos;
+import com.stampicorp.AppSonacam.repos.gestion_utilisateur.RoleRepo;
+import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.AgentService;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.EmployeService;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.ZoneService;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.ERole;
 import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,14 +24,49 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class FactureService {
     @Autowired
     FactureRepos repos;
+    @Autowired
+    UtilisateurService utilisateurService;
+    @Autowired
+    AgentService agentService;
+    @Autowired
+    EmployeService employeService;
+    @Autowired
+    RoleRepo roleRepo;
+    @Autowired
+    ZoneService zoneService;
 
     public List<Facture> list() {
-        return repos.findByEtatEqualsOrderById(Constantes.ADD);
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            Utilisateur users = utilisateurService.getOne(user.getId());
+            if (users.getAgent()) {
+                Agent agent = agentService.getAgentByUser(users.getId());
+                if (agent != null ? agent.getId() > 0 : false) {
+                    return repos.findByZone(agent.getZone(), Constantes.ADD);
+                }
+                return null;
+
+            } else {
+                Set<Role> roles = users.getRoles();
+                Employe employe = employeService.getEmployeByUser(users.getId());
+                Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
+                if (roles.contains(admin)) {
+                    repos.findByEtatEqualsOrderById(Constantes.ADD);
+                }
+
+                Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+                if (roles.contains(agence)) {
+                    return repos.findByAgence(employe.getAgence(), Constantes.ADD);
+                }
+            }
+        }
+        return null;
     }
 
     public List<Facture> listByContribuable(Long idContribuable) {
@@ -54,7 +98,13 @@ public class FactureService {
             if (f != null ? f.getId() > 0 : false) {
                 return new Facture("Cet usager à déjà un ordre de paiement en cours");
             }
-            facture.setStatut(Constantes.STATUT_ATTENTE);
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                facture.setAuthor(users);
+            }
+            facture.setStatut(Constantes.STATUT_VALIDER);
             facture.setEtat(Constantes.ADD);
             facture.setDate_save(new Date());
             facture.setDate_update(new Date());

@@ -23,10 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -147,6 +144,9 @@ public class AuthController {
         user.setPrenom(signUpRequest.getPrenom());
         user.setSexe(signUpRequest.getSexe());
         user.setMatricule(utilisateurService.generatedMatricule());
+        user.setAgent(signUpRequest.getAgent());
+        user.setDateSave(new Date());
+        user.setDateUpdate(new Date());
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));

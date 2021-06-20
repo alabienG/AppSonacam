@@ -2,6 +2,7 @@ package com.stampicorp.AppSonacam.services.gestion_utilisateur;
 
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Delegation;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Pays;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.PaysRepos;
 import com.stampicorp.AppSonacam.utils.Constantes;
@@ -18,7 +19,7 @@ public class PaysService {
     PaysRepos repos;
 
     @Autowired
-    AgenceService agenceService;
+    DelegationService delegationService;
 
     public List<Pays> all() {
         return repos.findByEtatEquals(Constantes.ADD);
@@ -61,7 +62,7 @@ public class PaysService {
     public String delete(Long id) {
         try {
             Pays pays = repos.getOne(id);
-            List<Agence> list = agenceService.findByPays(pays.getId());
+            List<Delegation> list = delegationService.allByPays(pays.getId());
             if (list != null ? list.size() > 0 : false) {
                 return "Ce pays ne peut pas être supprimé  !";
             }

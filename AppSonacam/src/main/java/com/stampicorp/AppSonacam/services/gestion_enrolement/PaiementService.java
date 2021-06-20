@@ -6,8 +6,11 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.PaiementRepo;
+import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
 import com.stampicorp.AppSonacam.utils.Constantes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,6 +25,8 @@ public class PaiementService {
     FactureService factureService;
     @Autowired
     VersementService versementService;
+    @Autowired
+    UtilisateurService utilisateurService;
 
     public List<Paiement> all() {
         return repos.findByEtatEqualsOrderById(Constantes.ADD);
@@ -90,7 +95,11 @@ public class PaiementService {
                 return new Paiement("Le montant du paiement est supérieur au montant de l'ordre de redevance !");
             }
 
-
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                paiement.setAuthor(users);
+            }
             paiement.setNumero(generatedNumero());
             paiement.setEtat(Constantes.ADD);
             paiement.setDate_save(new Date());
@@ -143,6 +152,12 @@ public class PaiementService {
                     Facture facture = paiement.getFacture();
                     factureService.payer(facture);
                 }
+            }
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                paiement.setAuthor(users);
             }
             paiement.setDate_update(new Date());
             paiement = repos.save(paiement);

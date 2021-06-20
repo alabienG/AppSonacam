@@ -17,6 +17,7 @@ public class SignupRequest {
     private String prenom;
     private String sexe;
     private String role;
+    private boolean agent;
 
     @NotBlank
     @Size(min = 6, max = 40)
@@ -88,6 +89,14 @@ public class SignupRequest {
 
     public String getPrenom() {
         return prenom;
+    }
+
+    public boolean getAgent() {
+        return agent;
+    }
+
+    public void setAgent(boolean agent) {
+        this.agent = agent;
     }
 
     public void setPrenom(String prenom) {

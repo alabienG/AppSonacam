@@ -26,9 +26,9 @@ public class ZoneRessource {
         return new ResponseEntity<>(zones, HttpStatus.OK);
     }
 
-    @GetMapping("/findByAntenne/{idAntenne}")
-    public List<Zone> findByAntenne(@PathVariable Long idAntenne) {
-        return zoneService.findByAntenne(idAntenne);
+    @GetMapping("/findByAgence/{idAgence}")
+    public List<Zone> findByAntenne(@PathVariable Long idAgence) {
+        return zoneService.findByAgence(idAgence);
     }
 
     @GetMapping("/find/{id}")

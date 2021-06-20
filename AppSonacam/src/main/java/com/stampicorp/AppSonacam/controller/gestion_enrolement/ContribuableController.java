@@ -28,6 +28,12 @@ public class ContribuableController {
         return service.allByActivite(idActivite);
     }
 
+    @GetMapping("/allByAuthor")
+    public List<Contribuable> allByAuthor() {
+        return service.allByAuthor();
+    }
+
+
     @GetMapping("/findByNumero/{numero}")
     public ResponseEntity findByNumero(@PathVariable String numero) {
         Contribuable contribuable = service.findByNumero(numero);

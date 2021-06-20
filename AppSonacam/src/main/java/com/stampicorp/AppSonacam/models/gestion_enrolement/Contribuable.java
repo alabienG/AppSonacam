@@ -4,6 +4,7 @@ import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -37,6 +38,9 @@ public class Contribuable implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur")
     private Utilisateur author;
+    private String image1;
+    private String image2;
+
     @Transient
     private String message;
 
@@ -209,5 +213,21 @@ public class Contribuable implements Serializable {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getImage1() {
+        return image1;
+    }
+
+    public void setImage1(String image1) {
+        this.image1 = image1;
+    }
+
+    public String getImage2() {
+        return image2;
+    }
+
+    public void setImage2(String image2) {
+        this.image2 = image2;
     }
 }

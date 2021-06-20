@@ -13,8 +13,8 @@ public class Zone implements Serializable {
     private String libelle;
     private String description;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "antenne")
-    private Antenne antenne;
+    @JoinColumn(name = "agence")
+    private Agence agence;
     private int etat;
     private Date dateSave;
     private Date dateUpdate;
@@ -64,12 +64,12 @@ public class Zone implements Serializable {
         this.description = description;
     }
 
-    public Antenne getAntenne() {
-        return antenne;
+    public Agence getAgence() {
+        return agence;
     }
 
-    public void setAntenne(Antenne antenne) {
-        this.antenne = antenne;
+    public void setAgence(Agence agence) {
+        this.agence = agence;
     }
 
     public int getEtat() {
