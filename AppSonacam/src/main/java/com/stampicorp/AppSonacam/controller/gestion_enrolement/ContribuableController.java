@@ -44,6 +44,16 @@ public class ContribuableController {
         }
     }
 
+    @GetMapping("/getNombreTotal")
+    public Double getNombreTotal() {
+        return service.nombreTotalByAuthor();
+    }
+
+    @GetMapping("/getNombreJour/{dateDebut}")
+    public Double getNombreJour(@PathVariable String dateDebut){
+        return service.nombreJournalier(dateDebut);
+    }
+
     @GetMapping("/getOne/{id}")
     public Contribuable getOne(@PathVariable Long id) {
         return service.getOne(id);

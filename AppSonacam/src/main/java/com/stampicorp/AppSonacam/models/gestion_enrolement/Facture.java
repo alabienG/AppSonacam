@@ -26,6 +26,8 @@ public class Facture implements Serializable {
     private Utilisateur author;
     @Transient
     public String message;
+    @Transient
+    private Date date_prochain;
 
     public Facture() {
     }
@@ -118,5 +120,11 @@ public class Facture implements Serializable {
         this.author = author;
     }
 
+    public Date getDate_prochain() {
+        return date_prochain;
+    }
 
+    public void setDate_prochain(Date date_prochain) {
+        this.date_prochain = date_prochain;
+    }
 }

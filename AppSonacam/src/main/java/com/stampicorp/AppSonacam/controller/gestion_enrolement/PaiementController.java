@@ -33,6 +33,16 @@ public class PaiementController {
         return service.allByAuthor(idAuthor);
     }
 
+    @GetMapping("/allByAuthor")
+    public List<Paiement> allByAuthor() {
+        return service.allByAuthor();
+    }
+
+    @GetMapping("/allJourByAuthor/{dateDebut}")
+    public List<Paiement> allJourByAuthor(@PathVariable String dateDebut) {
+        return service.getPaiementJourByAuthor(dateDebut);
+    }
+
     @GetMapping("/getOne/{id}")
     public ResponseEntity getOne(@PathVariable Long id) {
         return new ResponseEntity(service.getOne(id), HttpStatus.OK);
@@ -41,6 +51,26 @@ public class PaiementController {
     @GetMapping("/getSolde/{idFacture}")
     public Double getSolde(@PathVariable Long idFacture) {
         return service.getSolde(idFacture);
+    }
+
+    @GetMapping("/getNombreTotal")
+    public Double getNombreTotal() {
+        return service.nombreTotalByAuthor();
+    }
+
+    @GetMapping("/getNombreJour/{dateDebut}")
+    public Double getNombreJour(@PathVariable String dateDebut) {
+        return service.nombreJournalier(dateDebut);
+    }
+
+    @GetMapping("/getSoldeJourByAuthor/{dateDebut}")
+    public Double getSoldeJourByAuthor(@PathVariable String dateDebut) {
+        return service.getSoldeJourByAuthor(dateDebut);
+    }
+
+    @GetMapping("/getSoldeByAuthor")
+    public Double getSoldeByAuthor() {
+        return service.getSoldeByAuthor();
     }
 
     @PostMapping("/")

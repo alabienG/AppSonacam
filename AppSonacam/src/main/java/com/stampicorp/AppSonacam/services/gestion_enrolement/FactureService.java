@@ -3,6 +3,7 @@ package com.stampicorp.AppSonacam.services.gestion_enrolement;
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
+import com.stampicorp.AppSonacam.models.gestion_enrolement.PeriodePaiement;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.FactureRepos;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.RoleRepo;
@@ -41,6 +42,12 @@ public class FactureService {
     @Autowired
     ZoneService zoneService;
 
+    @Autowired
+    ContribuableService contribuableService;
+
+    @Autowired
+    PeriodePaiementService periodePaiementService;
+
     public List<Facture> list() {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user != null) {
@@ -73,6 +80,15 @@ public class FactureService {
         return repos.findByContribuableAndEtatEqualsOrderById(new Contribuable(idContribuable), Constantes.ADD);
     }
 
+    public List<Facture> listByContribuable(String numero) {
+        Contribuable contribuable = contribuableService.findByNumero(numero);
+        if (contribuable != null ? contribuable.getId() > 0 : false) {
+            return listByContribuable(contribuable.getId());
+        } else {
+            return null;
+        }
+    }
+
     public Facture findByNumero(String numero) {
         return repos.findByNumeroAndEtatEquals(numero, Constantes.ADD);
     }
@@ -103,6 +119,8 @@ public class FactureService {
                 Utilisateur users = utilisateurService.getOne(user.getId());
                 facture.setAuthor(users);
             }
+
+
             facture.setStatut(Constantes.STATUT_VALIDER);
             facture.setEtat(Constantes.ADD);
             facture.setDate_save(new Date());
@@ -122,6 +140,20 @@ public class FactureService {
             if (f != null ? f.getId() != facture.getId() : false) {
                 return new Facture("Ce numéro de facture existe déjà !");
             }
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                facture.setAuthor(users);
+            }
+
+            if(facture.getDate_prochain() != null){
+                PeriodePaiement periode = periodePaiementService.findByFacture(facture.getId());
+                periode.setDateProchainPaiement(facture.getDate_prochain());
+
+                periodePaiementService.update(periode);
+            }
+
             facture.setDate_update(new Date());
 
             return repos.save(facture);

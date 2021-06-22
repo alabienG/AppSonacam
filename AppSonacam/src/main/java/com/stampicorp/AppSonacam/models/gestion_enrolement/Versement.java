@@ -16,6 +16,8 @@ public class Versement implements Serializable {
     private Double montant;
     private String numero;
     private String statut;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author")
     private Utilisateur author;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "paiement")

@@ -9,11 +9,13 @@ import com.stampicorp.AppSonacam.repos.gestion_enrolement.PaiementRepo;
 import com.stampicorp.AppSonacam.security.UserDetailsImpl;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +40,14 @@ public class PaiementService {
 
     public List<Paiement> allByAuthor(Long idAuthor) {
         return repos.findByAuthorAndEtatEqualsOrderById(new Utilisateur(idAuthor), Constantes.ADD);
+    }
+
+    public List<Paiement> allByAuthor() {
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            return allByAuthor(user.getId());
+        }
+        return null;
     }
 
 
@@ -189,6 +199,83 @@ public class PaiementService {
             new SonacamException(e.getMessage());
             return null;
         }
+    }
+
+    public Double nombreTotalByAuthor() {
+        Double nombre = 0.0;
+        try {
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                nombre = repos.getNombreTotalContribuableByUser(new Utilisateur(user.getId()), Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+
+        }
+        return nombre;
+    }
+
+    public List<Paiement> getPaiementJourByAuthor(String dateDebut) {
+        List<Paiement> list = new ArrayList<>();
+        try {
+            Date debut = Utils.modifyDateLayout(dateDebut + " 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(dateDebut + " 23:59:00 UTC");
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                list = repos.getPaiementJourByAuthor(new Utilisateur(user.getId()), debut, fin, Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+        }
+
+        return list;
+    }
+
+    public Double getSoldeJourByAuthor(String dateDebut) {
+        Double montant = 0.0;
+        try {
+            Date debut = Utils.modifyDateLayout(dateDebut + " 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(dateDebut + " 23:59:00 UTC");
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                montant = repos.getSoldeJourByAuthor(new Utilisateur(user.getId()), debut, fin, Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+        }
+        return montant;
+    }
+
+    public Double getSoldeByAuthor() {
+        Double montant = 0.0;
+        try {
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                montant = repos.getSoldeByAuthor(new Utilisateur(user.getId()), Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+        }
+        return montant;
+    }
+
+
+    public Double nombreJournalier(String dateDebut) {
+        Double nombre = 0.0;
+        try {
+            Date debut = Utils.modifyDateLayout(dateDebut + " 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(dateDebut + " 23:59:00 UTC");
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                nombre = repos.getNombreContribuableByUser(new Utilisateur(user.getId()), debut, fin, Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+
+        }
+        return nombre;
     }
 
     @Transactional

@@ -11,6 +11,7 @@ import com.stampicorp.AppSonacam.security.UserDetailsImpl;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.utils.Constantes;
 import com.stampicorp.AppSonacam.utils.ERole;
+import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -170,6 +171,38 @@ public class ContribuableService {
         }
     }
 
+    public Double nombreTotalByAuthor() {
+        Double nombre = 0.0;
+        try {
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                nombre = repos.getNombreTotalContribuableByUser(new Utilisateur(user.getId()), Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+
+        }
+        return nombre;
+    }
+
+    public Double nombreJournalier(String dateDebut){
+        Double nombre = 0.0;
+        try {
+            Date debut = Utils.modifyDateLayout(dateDebut +" 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(dateDebut+ " 23:59:00 UTC");
+
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                nombre = repos.getNombreContribuableByUser(new Utilisateur(user.getId()),debut, fin, Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+
+        }
+        return nombre;
+    }
+
     @Transactional
     public String delete(Long id) {
         try {
@@ -178,6 +211,10 @@ public class ContribuableService {
             Contribuable contribuable = repos.getOne(id);
             contribuable.setEtat(Constantes.DELETE);
             contribuable.setDate_update(new Date());
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                contribuable.setAuthor(new Utilisateur(user.getId()));
+            }
             repos.save(contribuable);
             return "Suppression effectuée avec succès";
         } catch (Exception e) {
@@ -188,7 +225,7 @@ public class ContribuableService {
 
 
     private String generatedNumero(Contribuable contribuable) {
-        String numero = "SONACAM/";
+        String numero = "SONACAM-";
         Long id = repos.getCountId() + 1;
         if (id < 10) {
             return numero + "00" + id;

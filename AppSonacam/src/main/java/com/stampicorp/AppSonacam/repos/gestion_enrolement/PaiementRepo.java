@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -24,5 +25,18 @@ public interface PaiementRepo extends JpaRepository<Paiement, Long> {
     @Query(value = "select count (u.id) from Paiement u")
     Long getCountId();
 
+    @Query(value = "select count (u.id) from Paiement  u where u.author = :utilisateur and u.etat = :etat")
+    Double getNombreTotalContribuableByUser(Utilisateur utilisateur, int etat);
 
+    @Query(value = "select count (u.id) from Paiement  u where u.author = :utilisateur and u.date_save between :debut and :fin and u.etat = :etat")
+    Double getNombreContribuableByUser(Utilisateur utilisateur, Date debut, Date fin, int etat);
+
+    @Query(value = "select u from Paiement u where u.author = :utilisateur and u.date_save between :debut and :fin and u.etat = :etat")
+    List<Paiement> getPaiementJourByAuthor(Utilisateur utilisateur, Date debut, Date fin, int etat);
+
+    @Query(value = "select sum(u.montant) from Paiement u where u.author = :utilisateur and u.date_save between :debut and :fin and u.etat = :etat")
+    Double getSoldeJourByAuthor(Utilisateur utilisateur, Date debut, Date fin, int etat);
+
+    @Query(value = "select sum(u.montant) from Paiement u where u.author = :utilisateur  and u.etat = :etat")
+    Double getSoldeByAuthor(Utilisateur utilisateur,  int etat);
 }

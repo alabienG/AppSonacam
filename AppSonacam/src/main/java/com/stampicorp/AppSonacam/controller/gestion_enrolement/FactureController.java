@@ -28,6 +28,10 @@ public class FactureController {
         return service.listByContribuable(idContribuable);
     }
 
+    @GetMapping("/listByNumeroContribuable/{numeroContribuable}")
+    public List<Facture> listByContribuable(@PathVariable String numeroContribuable) {
+        return service.listByContribuable(numeroContribuable);
+    }
     @GetMapping("/findByNumero/{numero}")
     public ResponseEntity findByNumero(@PathVariable String numero) {
         return new ResponseEntity(service.findByNumero(numero), HttpStatus.OK);
