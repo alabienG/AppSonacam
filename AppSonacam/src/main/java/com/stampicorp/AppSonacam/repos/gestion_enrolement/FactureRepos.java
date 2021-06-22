@@ -31,4 +31,6 @@ public interface FactureRepos extends JpaRepository<Facture, Long> {
 
     @Query(value = "select count (u.id) from Facture u")
     Long getCountId();
+
+
 }

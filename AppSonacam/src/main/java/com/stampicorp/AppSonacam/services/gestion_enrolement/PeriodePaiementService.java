@@ -3,8 +3,11 @@ package com.stampicorp.AppSonacam.services.gestion_enrolement;
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.PeriodePaiement;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.PeriodePaiementRepo;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,30 @@ public class PeriodePaiementService {
     public PeriodePaiement findByFacture(Long idFacture) {
         return repos.findByFactureAndEtatEquals(new Facture(idFacture), Constantes.ADD);
     }
+
+    List<Facture> listByDate(String date) {
+        try {
+            Date debut = Utils.modifyDateLayout(date + " 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(date + " 23:59:00 UTC");
+            return repos.getFactureByDate(debut, fin, Constantes.ADD,Constantes.STATUT_VALIDER);
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    List<Facture> listByDateAgence(Agence agence , String date) {
+        try {
+            Date debut = Utils.modifyDateLayout(date + " 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(date + " 23:59:00 UTC");
+            return repos.getFactureByDate(debut, fin, Constantes.ADD,agence, Constantes.STATUT_VALIDER);
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+
 
     @Transactional
     public PeriodePaiement create(PeriodePaiement periodePaiement) {

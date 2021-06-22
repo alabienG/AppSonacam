@@ -100,6 +100,9 @@ public class PaiementService {
                 }
             } else {
                 paiement.setTranche(1);
+                if(paiement.getMontant() == paiement.getFacture().getMontant()){
+                    factureService.payer(paiement.getFacture());
+                }
             }
             if (paiement.getMontant() > paiement.getFacture().getMontant()) {
                 return new Paiement("Le montant du paiement est supérieur au montant de l'ordre de redevance !");

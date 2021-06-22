@@ -48,6 +48,7 @@ public class FactureService {
     @Autowired
     PeriodePaiementService periodePaiementService;
 
+
     public List<Facture> list() {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (user != null) {
@@ -76,6 +77,31 @@ public class FactureService {
         return null;
     }
 
+    public List<Facture> listByDate(String dateDebut) {
+        try {
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Utilisateur users = utilisateurService.getOne(user.getId());
+                if (!users.getAgent()) {
+                    Set<Role> roles = users.getRoles();
+                    Employe employe = employeService.getEmployeByUser(users.getId());
+                    Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
+                    Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+                    Role zone = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ZONE, Constantes.ADD);
+                    if (roles.contains(admin)) {
+                        return periodePaiementService.listByDate(dateDebut);
+                    } else if (roles.contains(agence)) {
+                        return periodePaiementService.listByDateAgence(employe.getAgence(), dateDebut);
+                    }
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+            return null;
+        }
+    }
+
     public List<Facture> listByContribuable(Long idContribuable) {
         return repos.findByContribuableAndEtatEqualsOrderById(new Contribuable(idContribuable), Constantes.ADD);
     }
@@ -92,6 +118,7 @@ public class FactureService {
     public Facture findByNumero(String numero) {
         return repos.findByNumeroAndEtatEquals(numero, Constantes.ADD);
     }
+
 
     @Transactional
     public Facture create(Facture facture) {
@@ -147,7 +174,7 @@ public class FactureService {
                 facture.setAuthor(users);
             }
 
-            if(facture.getDate_prochain() != null){
+            if (facture.getDate_prochain() != null) {
                 PeriodePaiement periode = periodePaiementService.findByFacture(facture.getId());
                 periode.setDateProchainPaiement(facture.getDate_prochain());
 

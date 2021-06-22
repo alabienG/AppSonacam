@@ -32,9 +32,15 @@ public class FactureController {
     public List<Facture> listByContribuable(@PathVariable String numeroContribuable) {
         return service.listByContribuable(numeroContribuable);
     }
+
     @GetMapping("/findByNumero/{numero}")
     public ResponseEntity findByNumero(@PathVariable String numero) {
         return new ResponseEntity(service.findByNumero(numero), HttpStatus.OK);
+    }
+
+    @GetMapping("/listByDate/{dateDebut}")
+    public List<Facture> listByDate(@PathVariable String dateDebut) {
+        return service.listByDate(dateDebut);
     }
 
     @PostMapping("/")

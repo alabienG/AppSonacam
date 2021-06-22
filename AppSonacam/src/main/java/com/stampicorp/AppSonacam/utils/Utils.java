@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class Utils {
+
     public static Date modifyDateLayout(String inputDate) throws ParseException {
         Date date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss z").parse(inputDate);
         return date;
