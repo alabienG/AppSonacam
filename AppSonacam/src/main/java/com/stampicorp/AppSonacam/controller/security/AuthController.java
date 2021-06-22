@@ -14,6 +14,7 @@ import com.stampicorp.AppSonacam.request.response.MessageResponse;
 import com.stampicorp.AppSonacam.security.JwtUtils;
 import com.stampicorp.AppSonacam.security.TokenRefreshRequest;
 import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.RoleService;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
 import com.stampicorp.AppSonacam.services.secutity.RefreshTokenService;
 import com.stampicorp.AppSonacam.utils.Constantes;
@@ -56,6 +57,8 @@ public class AuthController {
     @Autowired
     RefreshTokenService refreshTokenService;
 
+    @Autowired
+    RoleService roleService;
 
 
     @PostMapping("/signin")
@@ -94,6 +97,9 @@ public class AuthController {
                     .badRequest()
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
+        // create if not exist role
+
+        roleService.initRole();
 
         // Create new user's account
         Utilisateur user = new Utilisateur(signUpRequest.getUsername(),

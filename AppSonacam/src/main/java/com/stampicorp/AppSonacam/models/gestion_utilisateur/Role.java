@@ -29,6 +29,14 @@ public class Role implements Serializable {
         this.libelle = libelle;
     }
 
+    public Role(ERole libelle, String description, int etat, Date dateSave, Date dateUpdate) {
+        this.libelle = libelle;
+        this.description = description;
+        this.etat = etat;
+        this.dateSave = dateSave;
+        this.dateUpdate = dateUpdate;
+    }
+
     public Role(String message) {
         this.message = message;
     }
