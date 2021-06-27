@@ -1,0 +1,18 @@
+[Unit]
+Description=Sonacam Server
+After=syslog.target
+After=network.target[Service]
+
+[Service]
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=sonacam
+
+ExecStart=/usr/bin/java -jar /home/postgres/files/AppSonacam.jar
+
+User=sonacam
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
