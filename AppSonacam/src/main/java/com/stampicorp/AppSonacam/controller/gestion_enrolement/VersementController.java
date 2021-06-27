@@ -1,13 +1,20 @@
 package com.stampicorp.AppSonacam.controller.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
+import com.stampicorp.AppSonacam.security.UserDetailsImpl;
 import com.stampicorp.AppSonacam.services.gestion_enrolement.VersementService;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -68,4 +75,6 @@ public class VersementController {
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(service.delete(id), HttpStatus.OK);
     }
+
+
 }

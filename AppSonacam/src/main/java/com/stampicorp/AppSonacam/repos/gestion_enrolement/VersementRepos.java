@@ -3,6 +3,7 @@ package com.stampicorp.AppSonacam.repos.gestion_enrolement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,6 +27,18 @@ public interface VersementRepos extends JpaRepository<Versement, Long> {
 
     @Query(value = "select count (u.id) from Versement u")
     Long getCountId();
+
+    @Query(value = "select count(u.id) from Versement u where u.statut = :statut and u.etat = :etat")
+    Long countAllVersement(String statut, int etat);
+
+    @Query(value = "select sum(u.montant) from Versement u where u.statut = :statut and u.etat = :etat")
+    Double montantVersement(String statut, int etat);
+
+    @Query(value = "select count(u.id) from Versement u where u.paiement.facture.contribuable.zone.agence = :agence and u.etat = :etat and u.statut = :statut")
+    Long countVersementByAgence(Agence agence, String statut, int etat);
+
+    @Query(value = "select sum(u.montant) from Versement u where u.paiement.facture.contribuable.zone.agence = :agence and u.etat = :etat and u.statut = :statut")
+    Double montantVersementByAgence(Agence agence, String statut, int etat);
 
 
 }

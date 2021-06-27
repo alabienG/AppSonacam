@@ -15,17 +15,22 @@ import com.stampicorp.AppSonacam.services.gestion_utilisateur.ZoneService;
 import com.stampicorp.AppSonacam.utils.Constantes;
 import com.stampicorp.AppSonacam.utils.ERole;
 import com.stampicorp.AppSonacam.utils.Utils;
+import net.sf.jasperreports.engine.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class FactureService {
@@ -47,6 +52,8 @@ public class FactureService {
 
     @Autowired
     PeriodePaiementService periodePaiementService;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
 
     public List<Facture> list() {
@@ -242,5 +249,20 @@ public class FactureService {
         } else {
             return numero + id.toString();
         }
+    }
+
+    public JasperPrint getFile() throws FileNotFoundException, JRException, SQLException {
+        File file = ResourceUtils.getFile("classpath:factures.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+        Map<String, Object> parameter = new HashMap<>();
+        Connection connection = jdbcTemplate.getDataSource().getConnection();
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameter, connection);
+        return jasperPrint;
+    }
+
+
+    public void exportReport(OutputStream outputStream) throws FileNotFoundException, JRException, SQLException {
+        JasperPrint jasperPrint = getFile();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
     }
 }

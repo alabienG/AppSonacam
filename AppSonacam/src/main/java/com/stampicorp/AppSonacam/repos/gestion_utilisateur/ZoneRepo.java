@@ -18,5 +18,11 @@ public interface ZoneRepo extends JpaRepository<Zone, Long> {
 
     Zone findByLibelleAndEtatEquals(String libelle, int add);
 
+    @Query(value = "select count (u.id) from Zone u where u.etat = :etat")
+    Long nombreZone(int etat);
+
+    @Query(value = "select count (u.id) from Zone u where u.agence = :agence and u.etat = :etat")
+    Long nombreZone(Agence agence, int etat);
+
 
 }

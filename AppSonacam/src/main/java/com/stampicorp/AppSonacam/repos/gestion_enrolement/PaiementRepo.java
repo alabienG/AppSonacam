@@ -2,6 +2,7 @@ package com.stampicorp.AppSonacam.repos.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,7 @@ public interface PaiementRepo extends JpaRepository<Paiement, Long> {
     Double getNombreTotalContribuableByUser(Utilisateur utilisateur, int etat);
 
     @Query(value = "select count (u.id) from Paiement  u where u.author = :utilisateur and u.date_save between :debut and :fin and u.etat = :etat")
-    Double getNombreContribuableByUser(Utilisateur utilisateur, Date debut, Date fin, int etat);
+    Long getNombreContribuableByUser(Utilisateur utilisateur, Date debut, Date fin, int etat);
 
     @Query(value = "select u from Paiement u where u.author = :utilisateur and u.date_save between :debut and :fin and u.etat = :etat")
     List<Paiement> getPaiementJourByAuthor(Utilisateur utilisateur, Date debut, Date fin, int etat);
@@ -38,5 +39,23 @@ public interface PaiementRepo extends JpaRepository<Paiement, Long> {
     Double getSoldeJourByAuthor(Utilisateur utilisateur, Date debut, Date fin, int etat);
 
     @Query(value = "select sum(u.montant) from Paiement u where u.author = :utilisateur  and u.etat = :etat")
-    Double getSoldeByAuthor(Utilisateur utilisateur,  int etat);
+    Double getSoldeByAuthor(Utilisateur utilisateur, int etat);
+
+
+    // nombre de paiement total
+    @Query(value = "select count (u.id) from Paiement u where u.etat = :etat")
+    Long nombreFacture(int etat);
+
+    // nombre de paiement par agence
+    @Query(value = "select count (u.id) from Paiement u where u.facture.contribuable.zone.agence = :agence and u.etat = :etat")
+    Long nombreFactureByAgence(Agence agence, int etat);
+
+    // montant de paiement total;
+    @Query(value = "select sum (u.montant) from Paiement u where u.etat = :etat")
+    Double montantPaiement(int etat);
+
+    // montant de paiement par agence
+    @Query(value = "select sum (u.montant) from Paiement u where u.facture.contribuable.zone.agence = :agence and u.etat = :etat")
+    Double montantPaiementByAgence(Agence agence, int etat);
+
 }

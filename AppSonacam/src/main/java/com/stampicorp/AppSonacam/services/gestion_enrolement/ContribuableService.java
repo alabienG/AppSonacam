@@ -11,12 +11,15 @@ import com.stampicorp.AppSonacam.security.UserDetailsImpl;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.utils.Constantes;
 import com.stampicorp.AppSonacam.utils.ERole;
+import com.stampicorp.AppSonacam.utils.ExcelHelper;
 import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -95,12 +98,10 @@ public class ContribuableService {
     public Contribuable create(Contribuable contribuable) {
         try {
             contribuable.setNumero(generatedNumero(contribuable));
-
             Contribuable c = repos.findByNumeroAndEtatEquals(contribuable.getNumero(), Constantes.ADD);
             if (c != null ? c.getId() > 0 : false) {
                 return new Contribuable("Un contribuable existe déjà avec ce numéro !");
             }
-
             if (contribuable.getCni() != null ? contribuable.getCni().length() > 0 : false) {
                 c = repos.findByCniAndEtatEquals(contribuable.getCni(), Constantes.ADD);
                 if (c != null ? c.getId() > 0 : false) {
@@ -171,8 +172,8 @@ public class ContribuableService {
         }
     }
 
-    public Double nombreTotalByAuthor() {
-        Double nombre = 0.0;
+    public Long nombreTotalByAuthor() {
+        Long nombre = 0L;
         try {
 
             UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -186,15 +187,15 @@ public class ContribuableService {
         return nombre;
     }
 
-    public Double nombreJournalier(String dateDebut){
+    public Double nombreJournalier(String dateDebut) {
         Double nombre = 0.0;
         try {
-            Date debut = Utils.modifyDateLayout(dateDebut +" 00:00:00 UTC");
-            Date fin = Utils.modifyDateLayout(dateDebut+ " 23:59:00 UTC");
+            Date debut = Utils.modifyDateLayout(dateDebut + " 00:00:00 UTC");
+            Date fin = Utils.modifyDateLayout(dateDebut + " 23:59:00 UTC");
 
             UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (user != null) {
-                nombre = repos.getNombreContribuableByUser(new Utilisateur(user.getId()),debut, fin, Constantes.ADD);
+                nombre = repos.getNombreContribuableByUser(new Utilisateur(user.getId()), debut, fin, Constantes.ADD);
             }
         } catch (Exception e) {
             new SonacamException(e.getMessage());
@@ -234,5 +235,38 @@ public class ContribuableService {
         } else {
             return numero + id.toString();
         }
+    }
+
+    public void save(MultipartFile file) {
+        try {
+            List<Contribuable> contribuables = ExcelHelper.excelToTutorials(file.getInputStream());
+            if (contribuables != null ? !contribuables.isEmpty() : false) {
+                contribuables.forEach(element -> {
+                    Zone zone = zoneService.findZoneByLibelle(element.getFakeZone());
+                    if(zone != null ? zone.getId()>0:false){
+                        element.setZone(zone);
+                    }else{
+//                     zone = new Zone()
+                    }
+                    create(element);
+                });
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("fail to store excel data: " + e.getMessage());
+        }
+    }
+
+    public List<Contribuable> getUsagerMontantNull() {
+        try {
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (user != null) {
+                Zone zone = new Zone(agentService.getAgentByUser(user.getId()).getZone().getId());
+                return repos.findByMontantIsNullAndZoneAndEtatEquals(zone, Constantes.ADD);
+            }
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+        }
+
+        return null;
     }
 }

@@ -40,6 +40,10 @@ public class Contribuable implements Serializable {
     private Utilisateur author;
     private String image1;
     private String image2;
+    private String image3;
+    @Transient
+    private String fakeActivite;
+    @Transient private String fakeZone;
 
     @Transient
     private String message;
@@ -229,5 +233,29 @@ public class Contribuable implements Serializable {
 
     public void setImage2(String image2) {
         this.image2 = image2;
+    }
+
+    public String getImage3() {
+        return image3;
+    }
+
+    public void setImage3(String image3) {
+        this.image3 = image3;
+    }
+
+    public String getFakeActivite() {
+        return fakeActivite;
+    }
+
+    public void setFakeActivite(String fakeActivite) {
+        this.fakeActivite = fakeActivite;
+    }
+
+    public String getFakeZone() {
+        return fakeZone;
+    }
+
+    public void setFakeZone(String fakeZone) {
+        this.fakeZone = fakeZone;
     }
 }

@@ -4,6 +4,7 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Activite;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -28,11 +29,20 @@ public interface ContribuableRepos extends JpaRepository<Contribuable, Long> {
     List<Contribuable> findByAuthorAndEtatEqualsOrderById(Utilisateur author, int etat);
 
     @Query(value = "select count (u.id) from Contribuable  u where u.author = :utilisateur and u.etat = :etat")
-    Double getNombreTotalContribuableByUser(Utilisateur utilisateur, int etat);
+    Long getNombreTotalContribuableByUser(Utilisateur utilisateur, int etat);
 
     @Query(value = "select count (u.id) from Contribuable  u where u.author = :utilisateur and u.date_save between :debut and :fin and u.etat = :etat")
     Double getNombreContribuableByUser(Utilisateur utilisateur, Date debut, Date fin, int etat);
 
     @Query(value = "select count (u.id) from Contribuable u")
     Long getCountId();
+
+    @Query(value = "select count (u.id) from Contribuable u where u.etat = :etat")
+    Long nombreUsager(int etat);
+
+    @Query(value = "select count (u.id) from Contribuable u where u.zone.agence = :agence and u.etat = :etat")
+    Long nombreUsagerByAgence(Agence agence, int etat);
+
+//    @Query(value = "select u from Contribuable u where u.montant is null and u.zone = :zone and u.etat= :etat")
+    List<Contribuable> findByMontantIsNullAndZoneAndEtatEquals(Zone zone, int etat);
 }

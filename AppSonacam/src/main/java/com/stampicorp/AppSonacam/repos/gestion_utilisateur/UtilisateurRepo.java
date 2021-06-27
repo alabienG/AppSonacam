@@ -29,4 +29,7 @@ public interface UtilisateurRepo extends JpaRepository<Utilisateur, Long> {
 
     @Query(value = "insert into user_roles (user_id, role_id) values ( :idUser, :idRole )", nativeQuery = true)
     boolean addRole(@Param("idUser") Long idUser, @Param("idRole") Long idRole);
+
+    @Query(value = "select count (u.id) from Utilisateur u where u.agent = true and u.etat = :etat")
+    Long nombreAgent(int etat);
 }

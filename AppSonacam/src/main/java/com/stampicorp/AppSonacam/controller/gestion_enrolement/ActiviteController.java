@@ -54,12 +54,4 @@ public class ActiviteController {
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(service.delete(id), HttpStatus.OK);
     }
-
-    @GetMapping("/report/{format}")
-    public void generatedReport(HttpServletResponse response, @PathVariable String format) throws IOException, JRException, SQLException {
-        response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", String.format("attachement; filename=\"activite.pdf\""));
-        OutputStream out = response.getOutputStream();
-        service.exportReport(out);
-    }
 }

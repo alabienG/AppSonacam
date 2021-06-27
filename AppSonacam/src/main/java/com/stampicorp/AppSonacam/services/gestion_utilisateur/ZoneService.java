@@ -31,6 +31,10 @@ public class ZoneService {
         return zoneRepo.getOne(id);
     }
 
+    public Zone findZoneByLibelle(String libelle) {
+        return zoneRepo.findByLibelleAndEtatEquals(libelle, Constantes.ADD);
+    }
+
     public Zone AddZone(Zone zone) {
         Zone z = zoneRepo.findByLibelleAndEtatEquals(zone.getLibelle(), Constantes.ADD);
         try {

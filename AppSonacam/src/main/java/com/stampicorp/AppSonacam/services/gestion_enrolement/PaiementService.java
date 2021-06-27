@@ -264,8 +264,8 @@ public class PaiementService {
     }
 
 
-    public Double nombreJournalier(String dateDebut) {
-        Double nombre = 0.0;
+    public Long nombreJournalier(String dateDebut) {
+        Long nombre = 0L;
         try {
             Date debut = Utils.modifyDateLayout(dateDebut + " 00:00:00 UTC");
             Date fin = Utils.modifyDateLayout(dateDebut + " 23:59:00 UTC");

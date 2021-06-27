@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/sonacam/api/auth/**").permitAll()
+                .authorizeRequests().antMatchers("/sonacam/api/auth/**", "/sonacam/api/report/**").permitAll()
                 .antMatchers("/sonacam/api/test/**").permitAll()
                 .anyRequest().authenticated();
 

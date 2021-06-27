@@ -104,26 +104,12 @@ public class ActiviteService {
 
 
     public JasperPrint getFile() throws FileNotFoundException, JRException, SQLException {
-        List<Activite> list = repos.findByEtatEquals(Constantes.ADD);
         File file = ResourceUtils.getFile("classpath:activites.jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
-//        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(list);
         Map<String, Object> parameter = new HashMap<>();
-//        parameter.put("v", 1);
-//        DataSource dataSource = new DriverDataSource("jdbc:postgresql://localhost:5432/app_sonacam","",null,"postgres","admin");
         Connection connection = jdbcTemplate.getDataSource().getConnection();
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameter, connection);
         return jasperPrint;
-//        String path = "D:\\dev\\Spring\\AppSonacam\\AppSonacam\\src\\main\\resources\\etats";
-//        if (format.equalsIgnoreCase("html")) {
-//            JasperExportManager.exportReportToHtmlFile(jasperPrint, path + "\\activites.html");
-//        }
-//        if (format.equalsIgnoreCase("pdf")) {
-//            JasperExportManager.exportReportToPdfFile(jasperPrint, path + "\\activites.pdf");
-//        }
-//
-//        return "Export in path " + path;
-
     }
 
     public void exportReport(OutputStream outputStream) throws FileNotFoundException, JRException, SQLException {

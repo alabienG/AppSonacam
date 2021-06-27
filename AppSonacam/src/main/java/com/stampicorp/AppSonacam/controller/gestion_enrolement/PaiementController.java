@@ -59,7 +59,7 @@ public class PaiementController {
     }
 
     @GetMapping("/getNombreJour/{dateDebut}")
-    public Double getNombreJour(@PathVariable String dateDebut) {
+    public Long getNombreJour(@PathVariable String dateDebut) {
         return service.nombreJournalier(dateDebut);
     }
 

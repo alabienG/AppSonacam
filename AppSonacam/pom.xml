@@ -12,9 +12,11 @@
 	<artifactId>AppSonacam</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>AppSonacam</name>
+	<packaging>jar</packaging>
 	<description>Projet de collecte de données des membres de la sonacam</description>
 	<properties>
 		<java.version>11</java.version>
+		<start-class>com.stampicorp.AppSonacam.AppSonacamApplication</start-class>
 	</properties>
 
 	<build>
@@ -62,6 +64,12 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>6.17.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>4.1.2</version>
 		</dependency>
 
 		<dependency>

@@ -1,12 +1,15 @@
 package com.stampicorp.AppSonacam.controller.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
+import com.stampicorp.AppSonacam.request.response.MessageResponse;
 import com.stampicorp.AppSonacam.services.gestion_enrolement.ContribuableService;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.ExcelHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -45,12 +48,12 @@ public class ContribuableController {
     }
 
     @GetMapping("/getNombreTotal")
-    public Double getNombreTotal() {
+    public Long getNombreTotal() {
         return service.nombreTotalByAuthor();
     }
 
     @GetMapping("/getNombreJour/{dateDebut}")
-    public Double getNombreJour(@PathVariable String dateDebut){
+    public Double getNombreJour(@PathVariable String dateDebut) {
         return service.nombreJournalier(dateDebut);
     }
 
@@ -82,6 +85,30 @@ public class ContribuableController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(service.delete(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<MessageResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+        String message = "";
+
+        if (ExcelHelper.hasExcelFormat(file)) {
+            try {
+                service.save(file);
+                message = "Uploaded the file successfully: " + file.getOriginalFilename();
+                return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse(message));
+            } catch (Exception e) {
+                message = e.getMessage();
+//                message = "Could not upload the file: " + file.getOriginalFilename() + "!";
+                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(new MessageResponse(message));
+            }
+        }
+        message = "Please upload an excel file!";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new MessageResponse(message));
+    }
+
+    @GetMapping("/getUsagerMontantNull")
+    public List<Contribuable> getUsagerMontantNull() {
+        return service.getUsagerMontantNull();
     }
 
 }

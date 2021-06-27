@@ -32,5 +32,29 @@ public interface FactureRepos extends JpaRepository<Facture, Long> {
     @Query(value = "select count (u.id) from Facture u")
     Long getCountId();
 
+    @Query(value = "select count (u.id) from Facture u where u.etat = :etat")
+    Long nombreOrdre(int etat);
+
+    @Query(value = "select count (u.id) from Facture u where u.contribuable.zone.agence = :agence and u.etat = :etat")
+    Long nombreOrdreByAgence(Agence agence,  int etat);
+
+    @Query(value = "select count (u.id) from Facture u where u.statut = :statut and u.etat = :etat")
+    Long nombreOrdreByStatut(String statut, int etat);
+
+    @Query(value = "select count (u.id) from Facture u where u.contribuable.zone.agence = :agence and u.statut = :statut and u.etat = :etat")
+    Long nombreOrdreByStatutAndAgence(Agence agence, String statut, int etat);
+
+    @Query(value = "select sum(u.montant) from Facture u where u.statut = :statut and u.etat = :etat")
+    Double montantOrdreByStatut(String statut , int etat);
+
+    @Query(value = "select sum(u.montant) from Facture u where u.contribuable.zone.agence = :agence and u.statut = :statut and u.etat = :etat")
+    Double montantOrdreByStatut(Agence agence, String statut , int etat);
+
+    @Query(value = "select sum(u.montant) from Facture u where u.etat = :etat")
+    Double montantOrdre(int etat);
+
+    @Query(value = "select sum(u.montant) from Facture u where u.contribuable.zone.agence = :agence and u.etat = :etat")
+    Double montantOrdreByAgence(Agence agence, int etat);
+
 
 }
