@@ -2,17 +2,29 @@
 Description=Sonacam Server
 After=syslog.target
 After=network.target[Service]
+<<<<<<< Updated upstream
 
 [Service]
+=======
+User=sonacam
+Type=simple
+
+[Service]
+ExecStart=/usr/bin/java -jar /home/postgres/files/AppSonacam.jar
+Restart=always
+>>>>>>> Stashed changes
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=sonacam
 
+<<<<<<< Updated upstream
 ExecStart=/usr/bin/java -jar /home/postgres/files/AppSonacam.jar
 
 User=sonacam
 Type=simple
 Restart=always
 
+=======
+>>>>>>> Stashed changes
 [Install]
 WantedBy=multi-user.target
