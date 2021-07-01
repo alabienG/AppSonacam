@@ -43,6 +43,15 @@ public interface ContribuableRepos extends JpaRepository<Contribuable, Long> {
     @Query(value = "select count (u.id) from Contribuable u where u.zone.agence = :agence and u.etat = :etat")
     Long nombreUsagerByAgence(Agence agence, int etat);
 
-//    @Query(value = "select u from Contribuable u where u.montant is null and u.zone = :zone and u.etat= :etat")
+    //    @Query(value = "select u from Contribuable u where u.montant is null and u.zone = :zone and u.etat= :etat")
     List<Contribuable> findByMontantIsNullAndZoneAndEtatEquals(Zone zone, int etat);
+
+    @Query(value = "select u.image1 from Contribuable u where u.id = :id")
+    String getImage1(Long id);
+
+    @Query(value = "select u.image2 from Contribuable u where u.id = :id")
+    String getImage2(Long id);
+
+    @Query(value = "select u.image3 from Contribuable u where u.id = :id")
+    String getImage3(Long id);
 }

@@ -4,6 +4,7 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,13 @@ public interface PaiementRepo extends JpaRepository<Paiement, Long> {
     List<Paiement> findByFactureAndEtatEqualsOrderById(Facture facture, int etat);
 
     List<Paiement> findByAuthorAndEtatEqualsOrderById(Utilisateur author, int etat);
+
+    @Query(value = "select u from Paiement u where u.facture.contribuable.zone = :zone and u.etat = :etat")
+    List<Paiement> findByZone(Zone zone, int etat);
+
+
+    @Query(value = "select u from Paiement u where u.facture.contribuable.zone.agence = :agence and u.etat = :etat")
+    List<Paiement> findByAgence(Agence agence, int etat);
 
     @Query(value = "select max(u.tranche) from Paiement u where u.facture = :facture")
     int getMaxTranche(Facture facture);

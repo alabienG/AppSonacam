@@ -5,6 +5,7 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agence;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,12 @@ public interface VersementRepos extends JpaRepository<Versement, Long> {
 
     @Query(value = "select u from Versement u where u.paiement.facture = :facture and u.etat = :etat order by u.id desc ")
     List<Versement> allByFacture(Facture facture, int etat);
+
+    @Query(value = "select u from Versement u where u.paiement.facture.contribuable.zone = :zone and u.etat = :etat order by u.id desc ")
+    List<Versement> findByZone(Zone zone, int etat);
+
+    @Query(value = "select u from Versement u where u.paiement.facture.contribuable.zone.agence = :agence and u.etat = :etat order by u.id desc ")
+    List<Versement> findByAgence(Agence agence, int etat);
 
     List<Versement> findByAuthorAndEtatEqualsOrderById(Utilisateur author, int etat);
 

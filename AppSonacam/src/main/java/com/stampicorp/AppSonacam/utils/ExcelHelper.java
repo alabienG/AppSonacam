@@ -21,7 +21,7 @@ import java.util.List;
 public class ExcelHelper {
 
     public static String TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-//    static String[] HEADERs = { "Id", "Title", "Description", "Published" };
+    //    static String[] HEADERs = { "Id", "Title", "Description", "Published" };
     static String SHEET = "Contribuable";
 
     public static boolean hasExcelFormat(MultipartFile file) {
@@ -51,7 +51,6 @@ public class ExcelHelper {
                         rowNumber++;
                         continue;
                     }
-
                     Iterator<Cell> cellsInRow = currentRow.iterator();
 
                     Contribuable contribuable = new Contribuable();
@@ -62,18 +61,20 @@ public class ExcelHelper {
 
                         switch (cellIdx) {
                             case 1:
-                                contribuable.setNom((String) currentCell.getStringCellValue());
+                                String[] noms = (String[]) currentCell.getStringCellValue().split(" ");
+                                contribuable.setNom(noms[0]);
+                                contribuable.setPrenom(noms[1]);
                                 break;
 
                             case 4:
-                                contribuable.setTelephone(currentCell.getNumericCellValue()+"");
+                                contribuable.setTelephone(currentCell.getNumericCellValue() + "");
                                 break;
                             case 3:
                                 contribuable.setRaisonSociale((String) currentCell.getStringCellValue());
                                 break;
                             case 6:
                                 String activiteName = (String) currentCell.getStringCellValue();
-                               contribuable.setFakeActivite(activiteName);
+                                contribuable.setFakeActivite(activiteName);
 
 //                            case 10:
 //                                contribuable.setMontant(currentCell.getNumericCellValue());

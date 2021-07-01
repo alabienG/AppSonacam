@@ -1,6 +1,7 @@
 package com.stampicorp.AppSonacam.services.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.exception.SonacamException;
+import com.stampicorp.AppSonacam.models.beans.Images;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Activite;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.*;
@@ -38,6 +39,8 @@ public class ContribuableService {
     RoleRepo roleRepo;
     @Autowired
     ZoneService zoneService;
+    @Autowired
+    ActiviteService ac;
 
     public List<Contribuable> all() {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -48,19 +51,28 @@ public class ContribuableService {
             } else {
                 Set<Role> roles = users.getRoles();
                 Employe employe = employeService.getEmployeByUser(users.getId());
-                Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
+//                Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
+                Role admin = new Role(ERole.ROLE_ADMIN);
                 if (roles.contains(admin)) {
                     return repos.findByEtatEqualsOrderByIdDesc(Constantes.ADD);
                 }
-                Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+//                Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+                Role agence = new Role(ERole.ROLE_AGENCE);
                 if (roles.contains(agence)) {
                     return repos.findByAgence(employe.getAgence(), Constantes.ADD);
                 }
-
             }
         }
         List<Contribuable> list = repos.findByEtatEqualsOrderByIdDesc(Constantes.ADD);
         return list;
+    }
+
+    public Images getImagesUsager(Long id) {
+        Images image = new Images();
+        image.setImg(repos.getImage1(id));
+        image.setImg2(repos.getImage2(id));
+        image.setImg3(repos.getImage3(id));
+        return image;
     }
 
     public List<Contribuable> allByActivite(Long idActivite) {
@@ -239,16 +251,27 @@ public class ContribuableService {
 
     public void save(MultipartFile file) {
         try {
+            UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
             List<Contribuable> contribuables = ExcelHelper.excelToTutorials(file.getInputStream());
             if (contribuables != null ? !contribuables.isEmpty() : false) {
                 contribuables.forEach(element -> {
                     Zone zone = zoneService.findZoneByLibelle(element.getFakeZone());
-                    if(zone != null ? zone.getId()>0:false){
-                        element.setZone(zone);
-                    }else{
-//                     zone = new Zone()
+                    Activite activite = ac.findByLibelle(element.getFakeActivite());
+                    if (activite != null ? activite.getId() > 0 : false) {
+                        element.setActivite(activite);
                     }
-                    create(element);
+                    if (zone != null ? zone.getId() > 0 : false) {
+                        element.setZone(zone);
+                    }
+                    if (user != null) {
+                        element.setAuthor(new Utilisateur(user.getId()));
+                    }
+                    element.setNumero(generatedNumero(element));
+                    element.setDate_update(new Date());
+                    element.setDate_update(new Date());
+                    element.setEtat(Constantes.ADD);
+                    repos.save(element);
                 });
             }
         } catch (IOException e) {

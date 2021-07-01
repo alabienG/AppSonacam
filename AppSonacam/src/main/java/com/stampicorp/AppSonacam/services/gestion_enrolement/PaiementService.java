@@ -4,11 +4,17 @@ import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agent;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Employe;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Role;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.PaiementRepo;
 import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.AgentService;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.EmployeService;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
 import com.stampicorp.AppSonacam.utils.Constantes;
+import com.stampicorp.AppSonacam.utils.ERole;
 import com.stampicorp.AppSonacam.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +24,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PaiementService {
@@ -29,9 +36,36 @@ public class PaiementService {
     VersementService versementService;
     @Autowired
     UtilisateurService utilisateurService;
+    @Autowired
+    AgentService agentService;
+    @Autowired
+    EmployeService employeService;
 
     public List<Paiement> all() {
-        return repos.findByEtatEqualsOrderById(Constantes.ADD);
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            Utilisateur users = utilisateurService.getOne(user.getId());
+            if (users.getAgent()) {
+                Agent agent = agentService.getAgentByUser(users.getId());
+                if (agent != null ? agent.getId() > 0 : false) {
+                    return repos.findByZone(agent.getZone(), Constantes.ADD);
+                }
+                return null;
+            }else{
+                Set<Role> roles = users.getRoles();
+                Employe employe = employeService.getEmployeByUser(users.getId());
+                Role admin = new Role(ERole.ROLE_ADMIN);
+                if (roles.contains(admin)) {
+                    return repos.findByEtatEqualsOrderById(Constantes.ADD);
+                }
+                Role agence =new Role(ERole.ROLE_AGENCE);
+                if (roles.contains(agence)) {
+                    return repos.findByAgence(employe.getAgence(), Constantes.ADD);
+                }
+            }
+        }
+        return null;
+
     }
 
     public List<Paiement> allByFacture(Long idFacture) {

@@ -1,10 +1,12 @@
 package com.stampicorp.AppSonacam.models.gestion_enrolement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Zone;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -38,13 +40,18 @@ public class Contribuable implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "utilisateur")
     private Utilisateur author;
+    @XmlTransient
+    @JsonIgnore
     private String image1;
+    @XmlTransient
+    @JsonIgnore
     private String image2;
+    @XmlTransient
+    @JsonIgnore
     private String image3;
     @Transient
     private String fakeActivite;
     @Transient private String fakeZone;
-
     @Transient
     private String message;
 

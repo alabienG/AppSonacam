@@ -5,12 +5,14 @@ import com.stampicorp.AppSonacam.models.gestion_enrolement.Activite;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Paiement;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Versement;
+import com.stampicorp.AppSonacam.models.gestion_utilisateur.Agent;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Employe;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Role;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.Utilisateur;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.VersementRepos;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.RoleRepo;
 import com.stampicorp.AppSonacam.security.UserDetailsImpl;
+import com.stampicorp.AppSonacam.services.gestion_utilisateur.AgentService;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.EmployeService;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.RoleService;
 import com.stampicorp.AppSonacam.services.gestion_utilisateur.UtilisateurService;
@@ -29,10 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class VersementService {
@@ -50,9 +49,34 @@ public class VersementService {
 
     @Autowired
     RoleRepo roleRepo;
+    @Autowired
+    AgentService agentService;
 
     public List<Versement> all() {
-        return repos.findByEtatEqualsOrderById(Constantes.ADD);
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user != null) {
+            Utilisateur users = utilisateurService.getOne(user.getId());
+            if (users.getAgent()) {
+                Agent agent = agentService.getAgentByUser(users.getId());
+                if (agent != null ? agent.getId() > 0 : false) {
+                    return repos.findByZone(agent.getZone(), Constantes.ADD);
+                }
+                return null;
+            }else{
+                Set<Role> roles = users.getRoles();
+                Employe employe = employeService.getEmployeByUser(users.getId());
+                Role admin = new Role(ERole.ROLE_ADMIN);
+                if (roles.contains(admin)) {
+                    return repos.findByEtatEqualsOrderById(Constantes.ADD);
+                }
+                Role agence =new Role(ERole.ROLE_AGENCE);
+                if (roles.contains(agence)) {
+                    return repos.findByAgence(employe.getAgence(), Constantes.ADD);
+                }
+            }
+        }
+        return  null;
+
     }
 
     public List<Versement> allByFacture(Long idFacture) {

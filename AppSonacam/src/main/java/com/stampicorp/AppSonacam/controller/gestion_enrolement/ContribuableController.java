@@ -1,5 +1,6 @@
 package com.stampicorp.AppSonacam.controller.gestion_enrolement;
 
+import com.stampicorp.AppSonacam.models.beans.Images;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.request.response.MessageResponse;
 import com.stampicorp.AppSonacam.services.gestion_enrolement.ContribuableService;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RestController
 @RequestMapping(Constantes.PATH + "contribuable")
@@ -85,6 +88,11 @@ public class ContribuableController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         return new ResponseEntity(service.delete(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/getImage/{idUsager}")
+    public Images getImages(@PathVariable Long idUsager) {
+        return service.getImagesUsager(idUsager);
     }
 
     @PostMapping("/upload")

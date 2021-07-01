@@ -70,12 +70,12 @@ public class FactureService {
             } else {
                 Set<Role> roles = users.getRoles();
                 Employe employe = employeService.getEmployeByUser(users.getId());
-                Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
+                Role admin = new Role(ERole.ROLE_ADMIN);
                 if (roles.contains(admin)) {
                     return repos.findByEtatEqualsOrderById(Constantes.ADD);
                 }
 
-                Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+                Role agence =new Role(ERole.ROLE_AGENCE);
                 if (roles.contains(agence)) {
                     return repos.findByAgence(employe.getAgence(), Constantes.ADD);
                 }
@@ -92,8 +92,8 @@ public class FactureService {
                 if (!users.getAgent()) {
                     Set<Role> roles = users.getRoles();
                     Employe employe = employeService.getEmployeByUser(users.getId());
-                    Role admin = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ADMIN, Constantes.ADD);
-                    Role agence = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_AGENCE, Constantes.ADD);
+                    Role admin = new Role(ERole.ROLE_ADMIN);
+                    Role agence = new Role(ERole.ROLE_AGENCE);
                     Role zone = roleRepo.findByLibelleAndEtatEquals(ERole.ROLE_ZONE, Constantes.ADD);
                     if (roles.contains(admin)) {
                         return periodePaiementService.listByDate(dateDebut);

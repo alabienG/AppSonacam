@@ -61,6 +61,10 @@ public class ActiviteService {
         }
     }
 
+    public Activite findByLibelle(String libelle) {
+        return repos.findByLibelleAndEtatEquals(libelle, Constantes.ADD);
+    }
+
     @Transactional
     public Activite update(Activite activite) {
         try {

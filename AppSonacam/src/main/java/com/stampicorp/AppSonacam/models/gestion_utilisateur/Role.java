@@ -5,6 +5,7 @@ import com.stampicorp.AppSonacam.utils.ERole;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name="role")
@@ -100,5 +101,18 @@ public class Role implements Serializable {
 
     public void setDateUpdate(Date dateUpdate) {
         this.dateUpdate = dateUpdate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return libelle == role.libelle;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(libelle);
     }
 }
