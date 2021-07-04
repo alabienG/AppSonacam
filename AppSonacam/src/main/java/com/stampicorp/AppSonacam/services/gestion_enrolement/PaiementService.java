@@ -84,7 +84,6 @@ public class PaiementService {
         return null;
     }
 
-
     public Paiement getOne(Long id) {
         return repos.getOne(id);
     }
@@ -92,17 +91,13 @@ public class PaiementService {
     @Transactional
     public Paiement create(Paiement paiement) {
         try {
-
             // on verifie les montants !
-
-
             List<Paiement> list = repos.findByFactureAndEtatEqualsOrderById(paiement.getFacture(), Constantes.ADD);
             if (list != null ? list.size() > 0 : false) {
                 double montant = 0;
                 for (Paiement p : list) {
                     montant += p.getMontant();
                 }
-
                 if (montant < paiement.getFacture().getMontant()) {
                     if ((montant + paiement.getMontant()) > paiement.getFacture().getMontant()) {
                         return new Paiement("La somme des paiements sera suppérieur au montant de la facture");
@@ -127,6 +122,7 @@ public class PaiementService {
                     } else {
                         tranche++;
                         paiement.setTranche(tranche);
+                        factureService.payer(paiement.getFacture());
                     }
                 } else {
                     tranche++;

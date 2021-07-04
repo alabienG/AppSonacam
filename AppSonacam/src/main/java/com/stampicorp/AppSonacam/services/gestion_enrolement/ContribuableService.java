@@ -2,8 +2,10 @@ package com.stampicorp.AppSonacam.services.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.exception.SonacamException;
 import com.stampicorp.AppSonacam.models.beans.Images;
+import com.stampicorp.AppSonacam.models.beans.Usager;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Activite;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
+import com.stampicorp.AppSonacam.models.gestion_enrolement.Facture;
 import com.stampicorp.AppSonacam.models.gestion_utilisateur.*;
 import com.stampicorp.AppSonacam.repos.gestion_enrolement.ContribuableRepos;
 import com.stampicorp.AppSonacam.repos.gestion_utilisateur.AgenceRepos;
@@ -41,6 +43,10 @@ public class ContribuableService {
     ZoneService zoneService;
     @Autowired
     ActiviteService ac;
+    @Autowired
+    FactureService factureService;
+    @Autowired
+    PeriodePaiementService periodePaiementService;
 
     public List<Contribuable> all() {
         UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -114,12 +120,12 @@ public class ContribuableService {
             if (c != null ? c.getId() > 0 : false) {
                 return new Contribuable("Un contribuable existe déjà avec ce numéro !");
             }
-            if (contribuable.getCni() != null ? contribuable.getCni().length() > 0 : false) {
-                c = repos.findByCniAndEtatEquals(contribuable.getCni(), Constantes.ADD);
-                if (c != null ? c.getId() > 0 : false) {
-                    return new Contribuable("Un contribuable existe déjà avec ce numéro de CNI !");
-                }
-            }
+//            if (contribuable.getCni() != null ? contribuable.getCni().length() > 0 : false) {
+//                c = repos.findByCniAndEtatEquals(contribuable.getCni(), Constantes.ADD);
+//                if (c != null ? c.getId() > 0 : false) {
+//                    return new Contribuable("Un contribuable existe déjà avec ce numéro de CNI !");
+//                }
+//            }
 
             UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (user != null) {
@@ -220,7 +226,6 @@ public class ContribuableService {
     public String delete(Long id) {
         try {
             // on cherche les factures du contribuable
-
             Contribuable contribuable = repos.getOne(id);
             contribuable.setEtat(Constantes.DELETE);
             contribuable.setDate_update(new Date());
@@ -292,4 +297,35 @@ public class ContribuableService {
 
         return null;
     }
+
+    @Transactional
+    public Contribuable saveMobile(Usager usager) {
+        try {
+            if (usager.getContribuable().getFakeImg1() != null) {
+                usager.getContribuable().setImage1(usager.getContribuable().getFakeImg1());
+            }
+            if (usager.getContribuable().getFakeImg2() != null) {
+                usager.getContribuable().setImage2(usager.getContribuable().getFakeImg2());
+            }
+            if (usager.getContribuable().getFakeImg3() != null) {
+                usager.getContribuable().setImage3(usager.getContribuable().getFakeImg3());
+            }
+            Contribuable con = create(usager.getContribuable());
+            if (con != null ? con.getId() > 0 : false) {
+                usager.getFacture().setContribuable(con);
+                Facture facture = factureService.create(usager.getFacture());
+                usager.getPeriode().setFacture(facture);
+                periodePaiementService.create(usager.getPeriode());
+
+            }
+            return con;
+        } catch (Exception e) {
+            new SonacamException(e.getMessage());
+            return null;
+        }
+
+
+    }
 }
+
+

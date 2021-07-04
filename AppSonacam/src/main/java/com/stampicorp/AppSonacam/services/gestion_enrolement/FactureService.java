@@ -153,8 +153,6 @@ public class FactureService {
                 Utilisateur users = utilisateurService.getOne(user.getId());
                 facture.setAuthor(users);
             }
-
-
             facture.setStatut(Constantes.STATUT_VALIDER);
             facture.setEtat(Constantes.ADD);
             facture.setDate_save(new Date());

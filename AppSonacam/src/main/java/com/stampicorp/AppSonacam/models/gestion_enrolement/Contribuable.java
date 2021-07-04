@@ -54,6 +54,12 @@ public class Contribuable implements Serializable {
     @Transient private String fakeZone;
     @Transient
     private String message;
+    @Transient
+    private String fakeImg1;
+    @Transient
+    private String fakeImg2;
+    @Transient
+    private String fakeImg3;
 
     public Contribuable() {
     }
@@ -264,5 +270,29 @@ public class Contribuable implements Serializable {
 
     public void setFakeZone(String fakeZone) {
         this.fakeZone = fakeZone;
+    }
+
+    public String getFakeImg1() {
+        return fakeImg1;
+    }
+
+    public void setFakeImg1(String fakeImg1) {
+        this.fakeImg1 = fakeImg1;
+    }
+
+    public String getFakeImg2() {
+        return fakeImg2;
+    }
+
+    public void setFakeImg2(String fakeImg2) {
+        this.fakeImg2 = fakeImg2;
+    }
+
+    public String getFakeImg3() {
+        return fakeImg3;
+    }
+
+    public void setFakeImg3(String fakeImg3) {
+        this.fakeImg3 = fakeImg3;
     }
 }

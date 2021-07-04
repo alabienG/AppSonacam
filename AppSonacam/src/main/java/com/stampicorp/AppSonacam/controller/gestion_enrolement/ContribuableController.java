@@ -1,6 +1,7 @@
 package com.stampicorp.AppSonacam.controller.gestion_enrolement;
 
 import com.stampicorp.AppSonacam.models.beans.Images;
+import com.stampicorp.AppSonacam.models.beans.Usager;
 import com.stampicorp.AppSonacam.models.gestion_enrolement.Contribuable;
 import com.stampicorp.AppSonacam.request.response.MessageResponse;
 import com.stampicorp.AppSonacam.services.gestion_enrolement.ContribuableService;
@@ -68,6 +69,15 @@ public class ContribuableController {
     @PostMapping("/")
     public ResponseEntity create(@RequestBody Contribuable contribuable) {
         Contribuable con = service.create(contribuable);
+        if (con != null ? con.getId() > 0 : false) {
+            return new ResponseEntity(con, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity(con.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/saveMobile")
+    public ResponseEntity createMobile(@RequestBody Usager usager) {
+        Contribuable con = service.saveMobile(usager);
         if (con != null ? con.getId() > 0 : false) {
             return new ResponseEntity(con, HttpStatus.CREATED);
         } else {
